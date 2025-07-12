@@ -1,5 +1,5 @@
 [versions]
-agp = "8.10.1"
+agp = "8.9.1"
 kotlin = "2.1.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -15,6 +15,10 @@ hilt = "2.56.2"
 hiltExt = "1.2.0"
 hiltNavigationCompose = "1.2.0"
 ksp = "2.1.21-2.0.2"
+orbitCompose = "10.0.0"
+orbitCore = "10.0.0"
+orbitTest = "10.0.0"
+orbitViewmodel = "10.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +43,10 @@ hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-comp
 hilt-compiler = { group = "com.google.dagger" , name = "hilt-compiler" , version.ref = "hilt"}
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-navigation-compose = { group = "androidx.hilt",name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbitCompose" }
+orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbitCore" }
+orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbitTest" }
+orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbitViewmodel" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
