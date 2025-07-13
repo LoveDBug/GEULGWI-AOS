@@ -19,6 +19,7 @@ orbitCompose = "10.0.0"
 orbitCore = "10.0.0"
 orbitTest = "10.0.0"
 orbitViewmodel = "10.0.0"
+composeMaterial = "1.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,6 +48,7 @@ orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbitCo
 orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbitCore" }
 orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbitTest" }
 orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbitViewmodel" }
+androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.orbit.core)
     implementation(libs.orbit.viewmodel)
     implementation(libs.orbit.compose)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.orbit.test)
 
     implementation(libs.androidx.core.ktx)
