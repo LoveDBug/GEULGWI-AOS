@@ -35,8 +35,12 @@ internal fun SignUpRoute(
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            SignUpSideEffect.NavigateToMain -> onNavigateMain()
-            is SignUpSideEffect.ShowToast -> TODO()
+            SignUpSideEffect.NavigateToMain ->
+                onNavigateMain()
+
+            is SignUpSideEffect.ShowToast ->
+                /* TODO: Toast(effect.message) */
+                Unit
         }
     }
 
@@ -50,9 +54,7 @@ internal fun SignUpRoute(
         onBirthYearChanged = viewModel::onBirthYearChanged,
         onGenderSelected = viewModel::onGenderSelected,
         onNextStep = viewModel::onNextStep,
-        onBackStep = viewModel::onBackStep,
-        onSubmit = viewModel::onSubmit,
-        validatePasswordMatch = viewModel::validatePasswordMatch
+        onBackStep = viewModel::onBackStep
     )
 }
 
@@ -67,9 +69,7 @@ private fun SignUpScreen(
     onBirthYearChanged: (String) -> Unit,
     onGenderSelected: (String) -> Unit,
     onNextStep: () -> Unit,
-    onBackStep: () -> Unit,
-    onSubmit: () -> Unit,
-    validatePasswordMatch: () -> Unit
+    onBackStep: () -> Unit
 ) {
     BackHandler(enabled = state.currentStep != SignUpStep.Email) {
         onBackStep()
@@ -77,8 +77,9 @@ private fun SignUpScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         GlimTopBar(
-            title = stringResource(id = R.string.login_signup),
-            showBack = false,
+            title = stringResource(R.string.login_signup),
+            showBack = state.currentStep != SignUpStep.Email,
+            onBack = onBackStep,
             alignment = TitleAlignment.Center,
             titleColor = Color.Black,
             titleSize = 20.sp
@@ -104,7 +105,6 @@ private fun SignUpScreen(
                     onValueChange = onCodeChanged,
                     error = state.codeError
                 )
-
                 SignUpStep.Password -> PasswordConfirmInputContent(
                     password = state.password,
                     onPasswordChange = onPasswordChanged,
@@ -127,17 +127,9 @@ private fun SignUpScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             GlimButton(
-                text = stringResource(id = R.string.app_name),
-                onClick = {
-                    if (state.currentStep == SignUpStep.Password) {
-                        validatePasswordMatch()
-                    } else if (state.currentStep == SignUpStep.Profile) {
-                        onSubmit()
-                    } else {
-                        onNextStep()
-                    }
-                },
-                enabled = !state.isLoading
+                text = stringResource(R.string.login_signup),
+                onClick = onNextStep,
+                enabled = state.isStepValid && !state.isLoading
             )
         }
     }
@@ -160,9 +152,7 @@ private fun PreviewSignUpScreen_EmailStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {},
-        onSubmit = {},
-        validatePasswordMatch = {}
+        onBackStep = {}
     )
 }
 
@@ -183,9 +173,7 @@ private fun PreviewSignUpScreen_CodeStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {},
-        onSubmit = {},
-        validatePasswordMatch = {}
+        onBackStep = {}
     )
 }
 
@@ -208,9 +196,7 @@ private fun PreviewSignUpScreen_PasswordStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {},
-        onSubmit = {},
-        validatePasswordMatch = {}
+        onBackStep = {}
     )
 }
 
@@ -232,8 +218,6 @@ private fun PreviewSignUpScreen_ProfileStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {},
-        onSubmit = {},
-        validatePasswordMatch = {}
+        onBackStep = {}
     )
 }

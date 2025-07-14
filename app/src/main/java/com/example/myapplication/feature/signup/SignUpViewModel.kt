@@ -9,12 +9,10 @@ import org.orbitmvi.orbit.viewmodel.container
 
 /** ViewModel */
 @HiltViewModel
-class SignUpViewModel @Inject constructor() :
+internal class SignUpViewModel @Inject constructor() :
     ViewModel(), ContainerHost<SignUpUiState, SignUpSideEffect> {
 
-    override val container = container<SignUpUiState, SignUpSideEffect>(
-        initialState = SignUpUiState()
-    )
+    override val container = container<SignUpUiState, SignUpSideEffect>(SignUpUiState())
 
     fun onEmailChanged(email: String) = intent {
         reduce { state.copy(email = email, emailError = null) }
@@ -44,42 +42,55 @@ class SignUpViewModel @Inject constructor() :
         reduce { state.copy(gender = gender) }
     }
 
+    /** 모든 단계의 “다음” 및 마지막 단계의 제출까지 한 번에 처리 */
     fun onNextStep() = intent {
-        val next = when (state.currentStep) {
-            SignUpStep.Email -> SignUpStep.Code
-            SignUpStep.Code -> SignUpStep.Password
-            SignUpStep.Password -> SignUpStep.Profile
-            SignUpStep.Profile -> null
-        }
-        next?.let {
-            reduce { state.copy(currentStep = it) }
-        } ?: postSideEffect(SignUpSideEffect.NavigateToMain)
-    }
+        when (state.currentStep) {
+            SignUpStep.Email -> {
+                if (state.email.isBlank()) {
+                    postSideEffect(SignUpSideEffect.ShowToast("이메일을 입력해주세요."))
+                    reduce { state.copy(emailError = "이메일을 입력해주세요.") }
+                    return@intent
+                }
+            }
 
-    fun onBackStep() = intent {
-        val prev = when (state.currentStep) {
-            SignUpStep.Code -> SignUpStep.Email
-            SignUpStep.Password -> SignUpStep.Code
-            SignUpStep.Profile -> SignUpStep.Password
-            else -> null
-        }
-        prev?.let {
-            reduce { state.copy(currentStep = it) }
-        }
-    }
+            SignUpStep.Code -> {
+                if (state.code.isBlank()) {
+                    postSideEffect(SignUpSideEffect.ShowToast("인증 코드를 입력해주세요."))
+                    reduce { state.copy(codeError = "인증 코드를 입력해주세요.") }
+                    return@intent
+                }
+            }
 
-    fun validatePasswordMatch() = intent {
-        if (state.password != state.confirmPassword) {
-            reduce {
-                state.copy(confirmPasswordError = "비밀번호가 일치하지 않습니다.")
+            SignUpStep.Password -> {
+                if (state.password.isBlank()) {
+                    postSideEffect(SignUpSideEffect.ShowToast("비밀번호를 입력해주세요."))
+                    reduce { state.copy(passwordError = "비밀번호를 입력해주세요.") }
+                    return@intent
+                }
+                if (state.password != state.confirmPassword) {
+                    postSideEffect(SignUpSideEffect.ShowToast("비밀번호가 일치하지 않습니다."))
+                    reduce { state.copy(confirmPasswordError = "비밀번호가 일치하지 않습니다.") }
+                    return@intent
+                }
+            }
+
+            SignUpStep.Profile -> {
+                reduce { state.copy(isLoading = true) }
+                delay(1_000)  // 실제 가입 요청 대신 지연
+                postSideEffect(SignUpSideEffect.NavigateToMain)
+                return@intent
             }
         }
+        // 유효성 검사 통과 시 다음 단계로
+        state.currentStep.next()?.let { next ->
+            reduce { state.copy(currentStep = next) }
+        }
     }
 
-    fun onSubmit() = intent {
-        reduce { state.copy(isLoading = true) }
-        delay(1000)
-        reduce { state.copy(isLoading = false) }
-        postSideEffect(SignUpSideEffect.NavigateToMain)
+    /** 이전 단계로 돌아가기 */
+    fun onBackStep() = intent {
+        state.currentStep.prev()?.let { prev ->
+            reduce { state.copy(currentStep = prev) }
+        }
     }
 }
