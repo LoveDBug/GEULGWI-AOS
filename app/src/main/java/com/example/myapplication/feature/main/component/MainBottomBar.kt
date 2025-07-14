@@ -28,9 +28,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.app.GlimApplication
 import com.example.myapplication.feature.main.MainTab
 import kotlinx.collections.immutable.ImmutableList
 
+//enum class TabTheme(val isDarkMode: Boolean, val backgroundColor: Color, val color: Color) {
+//    LIGHT(false, MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.outline),
+//    DARK(false, MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.outline),
+//}
 @Composable
 internal fun MainBottomBar(
     visible: Boolean = true,
@@ -38,14 +43,22 @@ internal fun MainBottomBar(
     currentTab: MainTab?,
     onTabSelected: (MainTab) -> Unit,
 ) {
+    val (backgroundColor, iconTint) = if (currentTab == MainTab.REELS) {
+        Color(0xFF1C1B1F) to MaterialTheme.colorScheme.surface
+    } else {
+        Color.White to MaterialTheme.colorScheme.onSurface
+    }
+
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideIn { IntOffset(0, it.height) },
         exit = fadeOut() + slideOut { IntOffset(0, it.height) },
     ) {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
+        Box(modifier = Modifier.background(backgroundColor)) {
             Column {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+                if(currentTab != MainTab.REELS) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = (0.2).dp)
+                }
                 Row(
                     modifier = Modifier
                         .navigationBarsPadding()
@@ -57,6 +70,7 @@ internal fun MainBottomBar(
                         MainBottomBarItem(
                             tab = tab,
                             selected = tab == currentTab,
+                            iconTint = iconTint,
                             onClick = {
                                 if (tab != currentTab) {
                                     onTabSelected(tab)
@@ -74,6 +88,7 @@ internal fun MainBottomBar(
 private fun RowScope.MainBottomBarItem(
     tab: MainTab,
     selected: Boolean,
+    iconTint: Color,
     onClick: () -> Unit,
 ) {
     Box(
@@ -95,7 +110,7 @@ private fun RowScope.MainBottomBarItem(
             Icon(
                 imageVector = ImageVector.vectorResource(tab.iconResId),
                 contentDescription = tab.contentDescription,
-                tint = if(selected) Color.Black else Color.Gray
+                tint = if(selected) iconTint else Color.Gray
             )
         }
     }

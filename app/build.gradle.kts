@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -56,7 +58,15 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     //kotlinx-immutable
     implementation(libs.kotlinx.collections.immutable)
+
     implementation(libs.play.services.mlkit.text.recognition)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.hilt.ext.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +78,6 @@ dependencies {
     // To recognize Korean script
     implementation ("com.google.mlkit:text-recognition-korean:16.0.1")
     implementation ("io.coil-kt:coil-compose:2.4.0")
+    implementation ("org.orbit-mvi:orbit-viewmodel:6.1.0")
+    implementation ("org.orbit-mvi:orbit-compose:6.1.0")
 }
