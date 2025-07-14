@@ -13,13 +13,14 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 
 @Composable
-fun EmailInputContent(
+fun EmailInputTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    label: String = stringResource(id = R.string.login_email_placeholder),
     error: String? = null
 ) {
-    val labelText = error ?: stringResource(id = R.string.login_email_placeholder)
+    val labelText = error ?: label
 
     TextField(
         value = value,
@@ -41,3 +42,4 @@ fun EmailInputContent(
         }
     )
 }
+

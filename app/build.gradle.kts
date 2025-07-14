@@ -40,41 +40,48 @@ android {
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
+    }
 }
 
 dependencies {
-
-    implementation(libs.orbit.core)
-    implementation(libs.orbit.viewmodel)
-    implementation(libs.orbit.compose)
-    implementation(libs.androidx.compose.material)
-    testImplementation(libs.orbit.test)
+    implementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    //navigation
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
-    //kotlinx-serialization
+
+    //Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
+    // Orbit MVI
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.viewmodel)
+    implementation(libs.orbit.compose)
+    testImplementation(libs.orbit.test)
+
+    // Kotlin Serialization & Immutable Collections
     implementation(libs.kotlinx.serialization.json)
-    //kotlinx-immutable
     implementation(libs.kotlinx.collections.immutable)
 
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.ext.compiler)
     implementation(libs.hilt.navigation.compose)
 
-
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

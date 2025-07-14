@@ -26,9 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.GlimTopBar
 import com.example.myapplication.core.ui.TitleAlignment
-import com.example.myapplication.feature.login.component.EmailInputContent
+import com.example.myapplication.feature.login.component.EmailInputTextField
 import com.example.myapplication.feature.login.component.GlimButton
-import com.example.myapplication.feature.login.component.PasswordInputContent
+import com.example.myapplication.feature.login.component.PasswordInputTextField
 import com.example.myapplication.feature.login.component.SocialButton
 import com.example.myapplication.feature.login.component.SocialProvider
 import org.orbitmvi.orbit.compose.collectAsState
@@ -100,7 +100,7 @@ internal fun LoginScreen(
             )
             Spacer(Modifier.height(48.dp))
 
-            EmailInputContent(
+            EmailInputTextField(
                 value = state.email,
                 onValueChange = onEmailChanged,
                 error = state.emailError
@@ -108,7 +108,7 @@ internal fun LoginScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            PasswordInputContent(
+            PasswordInputTextField(
                 value = state.password,
                 onValueChange = onPasswordChanged,
                 error = state.passwordError
