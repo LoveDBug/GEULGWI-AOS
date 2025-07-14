@@ -1,10 +1,11 @@
 package com.example.myapplication.feature.signup
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,44 +13,68 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.GlimTopBar
 import com.example.myapplication.core.ui.TitleAlignment
 import com.example.myapplication.feature.login.component.GlimButton
-import com.example.myapplication.feature.signup.component.*
-
-enum class SignUpStep(val progress: Float) {
-    Email(0.25f),
-    Code(0.5f),
-    Password(0.75f),
-    Profile(1f)
-}
-
-@Composable
-internal fun SignUpRoute() {
-    SignUpScreen()
-}
+import com.example.myapplication.feature.signup.component.EmailAuthInputContent
+import com.example.myapplication.feature.signup.component.EmailVerificationCodeInputContent
+import com.example.myapplication.feature.signup.component.PasswordConfirmInputContent
+import com.example.myapplication.feature.signup.component.ProgressIndicatorBar
+import com.example.myapplication.feature.signup.component.UserProfileInputContent
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-private fun SignUpScreen() {
-    var currentStep by remember { mutableStateOf(SignUpStep.Email) }
+internal fun SignUpRoute(
+    onNavigateMain: () -> Unit,
+    viewModel: SignUpViewModel = hiltViewModel()
+) {
+    val state = viewModel.collectAsState().value
 
-    var email by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var birthYear by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf<String?>(null) }
-
-    BackHandler(enabled = currentStep != SignUpStep.Email) {
-        currentStep = when (currentStep) {
-            SignUpStep.Code -> SignUpStep.Email
-            SignUpStep.Password -> SignUpStep.Code
-            SignUpStep.Profile -> SignUpStep.Password
-            else -> currentStep
+    viewModel.collectSideEffect { effect ->
+        when (effect) {
+            SignUpSideEffect.NavigateToMain -> onNavigateMain()
+            is SignUpSideEffect.ShowToast -> TODO()
         }
     }
+
+    SignUpScreen(
+        state = state,
+        onEmailChanged = viewModel::onEmailChanged,
+        onCodeChanged = viewModel::onCodeChanged,
+        onPasswordChanged = viewModel::onPasswordChanged,
+        onConfirmPasswordChanged = viewModel::onConfirmPasswordChanged,
+        onNameChanged = viewModel::onNameChanged,
+        onBirthYearChanged = viewModel::onBirthYearChanged,
+        onGenderSelected = viewModel::onGenderSelected,
+        onNextStep = viewModel::onNextStep,
+        onBackStep = viewModel::onBackStep,
+        onSubmit = viewModel::onSubmit,
+        validatePasswordMatch = viewModel::validatePasswordMatch
+    )
+}
+
+@Composable
+private fun SignUpScreen(
+    state: SignUpUiState,
+    onEmailChanged: (String) -> Unit,
+    onCodeChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
+    onBirthYearChanged: (String) -> Unit,
+    onGenderSelected: (String) -> Unit,
+    onNextStep: () -> Unit,
+    onBackStep: () -> Unit,
+    onSubmit: () -> Unit,
+    validatePasswordMatch: () -> Unit
+) {
+    BackHandler(enabled = state.currentStep != SignUpStep.Email) {
+        onBackStep()
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         GlimTopBar(
             title = stringResource(id = R.string.login_signup),
@@ -59,43 +84,43 @@ private fun SignUpScreen() {
             titleSize = 20.sp
         )
 
-        ProgressIndicatorBar(progress = currentStep.progress)
+        ProgressIndicatorBar(progress = state.currentStep.progress)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            when (currentStep) {
+            when (state.currentStep) {
                 SignUpStep.Email -> EmailAuthInputContent(
-                    value = email,
-                    onValueChange = { email = it },
-                    error = null // add validation later
+                    value = state.email,
+                    onValueChange = onEmailChanged,
+                    error = state.emailError
                 )
 
                 SignUpStep.Code -> EmailVerificationCodeInputContent(
-                    value = code,
-                    onValueChange = { code = it },
-                    error = null
+                    value = state.code,
+                    onValueChange = onCodeChanged,
+                    error = state.codeError
                 )
 
                 SignUpStep.Password -> PasswordConfirmInputContent(
-                    password = password,
-                    onPasswordChange = { password = it },
-                    confirmPassword = confirmPassword,
-                    onConfirmPasswordChange = { confirmPassword = it },
-                    passwordError = null,
-                    confirmPasswordError = null
+                    password = state.password,
+                    onPasswordChange = onPasswordChanged,
+                    confirmPassword = state.confirmPassword,
+                    onConfirmPasswordChange = onConfirmPasswordChanged,
+                    passwordError = state.passwordError,
+                    confirmPasswordError = state.confirmPasswordError
                 )
 
                 SignUpStep.Profile -> UserProfileInputContent(
-                    name = name,
-                    onNameChange = { name = it },
-                    birthYear = birthYear,
-                    onBirthYearChange = { birthYear = it },
-                    selectedGender = gender,
-                    onGenderSelect = { gender = it }
+                    name = state.name,
+                    onNameChange = onNameChanged,
+                    birthYear = state.birthYear,
+                    onBirthYearChange = onBirthYearChanged,
+                    selectedGender = state.gender,
+                    onGenderSelect = onGenderSelected
                 )
             }
 
@@ -104,37 +129,111 @@ private fun SignUpScreen() {
             GlimButton(
                 text = stringResource(id = R.string.app_name),
                 onClick = {
-                    currentStep = when (currentStep) {
-                        SignUpStep.Email -> SignUpStep.Code
-                        SignUpStep.Code -> SignUpStep.Password
-                        SignUpStep.Password -> SignUpStep.Profile
-                        SignUpStep.Profile -> SignUpStep.Profile
+                    if (state.currentStep == SignUpStep.Password) {
+                        validatePasswordMatch()
+                    } else if (state.currentStep == SignUpStep.Profile) {
+                        onSubmit()
+                    } else {
+                        onNextStep()
                     }
-                }
+                },
+                enabled = !state.isLoading
             )
         }
     }
 }
 
+@Preview(name = "Step 1 - Email Input", showBackground = true)
 @Composable
-fun ProgressIndicatorBar(progress: Float) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(4.dp)
-            .background(Color.LightGray)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(progress)
-                .background(MaterialTheme.colorScheme.primary)
-        )
-    }
+private fun PreviewSignUpScreen_EmailStep() {
+    SignUpScreen(
+        state = SignUpUiState(
+            currentStep = SignUpStep.Email,
+            email = "user@example.com",
+            emailError = null
+        ),
+        onEmailChanged = {},
+        onCodeChanged = {},
+        onPasswordChanged = {},
+        onConfirmPasswordChanged = {},
+        onNameChanged = {},
+        onBirthYearChanged = {},
+        onGenderSelected = {},
+        onNextStep = {},
+        onBackStep = {},
+        onSubmit = {},
+        validatePasswordMatch = {}
+    )
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Step 2 - Code Input", showBackground = true)
 @Composable
-private fun PreviewSignUpScreen() {
-    SignUpScreen()
+private fun PreviewSignUpScreen_CodeStep() {
+    SignUpScreen(
+        state = SignUpUiState(
+            currentStep = SignUpStep.Code,
+            code = "123456",
+            codeError = null
+        ),
+        onEmailChanged = {},
+        onCodeChanged = {},
+        onPasswordChanged = {},
+        onConfirmPasswordChanged = {},
+        onNameChanged = {},
+        onBirthYearChanged = {},
+        onGenderSelected = {},
+        onNextStep = {},
+        onBackStep = {},
+        onSubmit = {},
+        validatePasswordMatch = {}
+    )
+}
+
+@Preview(name = "Step 3 - Password Input", showBackground = true)
+@Composable
+private fun PreviewSignUpScreen_PasswordStep() {
+    SignUpScreen(
+        state = SignUpUiState(
+            currentStep = SignUpStep.Password,
+            password = "Aa1!aaaa",
+            confirmPassword = "Aa1!aaaa",
+            passwordError = null,
+            confirmPasswordError = null
+        ),
+        onEmailChanged = {},
+        onCodeChanged = {},
+        onPasswordChanged = {},
+        onConfirmPasswordChanged = {},
+        onNameChanged = {},
+        onBirthYearChanged = {},
+        onGenderSelected = {},
+        onNextStep = {},
+        onBackStep = {},
+        onSubmit = {},
+        validatePasswordMatch = {}
+    )
+}
+
+@Preview(name = "Step 4 - Profile Input", showBackground = true)
+@Composable
+private fun PreviewSignUpScreen_ProfileStep() {
+    SignUpScreen(
+        state = SignUpUiState(
+            currentStep = SignUpStep.Profile,
+            name = "인성",
+            birthYear = "1998",
+            gender = "남성"
+        ),
+        onEmailChanged = {},
+        onCodeChanged = {},
+        onPasswordChanged = {},
+        onConfirmPasswordChanged = {},
+        onNameChanged = {},
+        onBirthYearChanged = {},
+        onGenderSelected = {},
+        onNextStep = {},
+        onBackStep = {},
+        onSubmit = {},
+        validatePasswordMatch = {}
+    )
 }
