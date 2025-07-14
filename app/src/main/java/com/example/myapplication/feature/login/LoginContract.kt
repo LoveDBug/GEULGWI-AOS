@@ -10,7 +10,7 @@ data class LoginUiState(
     val emailError: String? = null,
     val passwordError: String? = null,
 ) {
-    val isFormValid: Boolean
+    val isLoginEnabled: Boolean
         get() = emailError == null
                 && passwordError == null
                 && email.isNotBlank()

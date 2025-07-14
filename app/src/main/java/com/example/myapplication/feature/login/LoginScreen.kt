@@ -1,8 +1,5 @@
 package com.example.myapplication.feature.login
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,32 +8,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.wear.compose.material.ContentAlpha
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.GlimTopBar
 import com.example.myapplication.core.ui.TitleAlignment
+import com.example.myapplication.feature.login.component.EmailInputContent
+import com.example.myapplication.feature.login.component.GlimButton
+import com.example.myapplication.feature.login.component.PasswordInputContent
+import com.example.myapplication.feature.login.component.SocialButton
+import com.example.myapplication.feature.login.component.SocialProvider
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -52,12 +46,8 @@ internal fun LoginRoute(
     val uiState = viewModel.collectAsState().value
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            LoginSideEffect.NavigateMain ->
-                onNavigateMain()
-
-            is LoginSideEffect.ShowError ->
-                /* TODO: 스낵바로 effect.message 표시 */
-                Unit
+            LoginSideEffect.NavigateMain -> onNavigateMain()
+            is LoginSideEffect.ShowError -> Unit
         }
     }
 
@@ -86,7 +76,7 @@ internal fun LoginScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         GlimTopBar(
-            title = "로그인",
+            title = stringResource(id = R.string.login_title),
             showBack = false,
             alignment = TitleAlignment.Center,
             titleColor = Color.Black,
@@ -101,7 +91,7 @@ internal fun LoginScreen(
         ) {
             Spacer(Modifier.height(8.dp))
             Text(
-                "로그인하고\n풍부하게 감성을 채워보세요.",
+                stringResource(id = R.string.login_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
@@ -110,65 +100,33 @@ internal fun LoginScreen(
             )
             Spacer(Modifier.height(48.dp))
 
-            // 이메일 필드: 에러일 때 label 에러 메시지, 색상도 errorColor 로
-            TextField(
+            EmailInputContent(
                 value = state.email,
                 onValueChange = onEmailChanged,
-                singleLine = true,
-                isError = state.emailError != null,
-                modifier = Modifier.fillMaxWidth(),
-                label = {
-                    Text(
-                        text = state.emailError ?: "이메일을 입력해주세요.",
-                        color = if (state.emailError != null)
-                            MaterialTheme.colorScheme.error
-                        else
-                            LocalContentColor.current.copy(alpha = ContentAlpha.medium)
-                    )
-                }
+                error = state.emailError
             )
 
             Spacer(Modifier.height(16.dp))
 
-            TextField(
+            PasswordInputContent(
                 value = state.password,
                 onValueChange = onPasswordChanged,
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                isError = state.passwordError != null,
-                modifier = Modifier.fillMaxWidth(),
-                label = {
-                    Text(
-                        text = state.passwordError ?: "비밀번호를 입력해주세요.",
-                        color = if (state.passwordError != null)
-                            MaterialTheme.colorScheme.error
-                        else
-                            LocalContentColor.current.copy(alpha = ContentAlpha.medium)
-                    )
-                }
+                error = state.passwordError
             )
+
             Spacer(Modifier.height(24.dp))
 
-            Button(
+            GlimButton(
+                text = if (state.isLoading) stringResource(R.string.login_loading) else stringResource(R.string.login_button),
                 onClick = onLoginClicked,
-                enabled = state.isFormValid && !state.isLoading,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            ) {
-                if (state.isLoading) {
-                    Text("로딩중")
-                } else {
-                    Text("로그인")
-                }
-
-            }
+                enabled = state.isLoginEnabled && !state.isLoading
+            )
 
             Spacer(Modifier.height(12.dp))
             Row {
-                TextButton(onClick = onSignUpClicked) { Text("회원가입") }
+                TextButton(onClick = onSignUpClicked) { Text(stringResource(id = R.string.login_signup)) }
                 Spacer(Modifier.width(8.dp))
-                TextButton(onClick = onForgotPassword) { Text("비밀번호를 잊어버렸나요?") }
+                TextButton(onClick = onForgotPassword) { Text(stringResource(id = R.string.login_forgot_password)) }
             }
 
             Spacer(Modifier.height(24.dp))
@@ -177,7 +135,7 @@ internal fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 HorizontalDivider(modifier = Modifier.weight(1f))
-                Text(" SNS 간편 로그인 ", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.login_sns_title), style = MaterialTheme.typography.bodySmall)
                 HorizontalDivider(modifier = Modifier.weight(1f))
             }
             Spacer(Modifier.height(16.dp))
@@ -193,43 +151,12 @@ internal fun LoginScreen(
 
             Spacer(Modifier.height(16.dp))
             TextButton(onClick = onGuest) {
-                Text("비회원으로 둘러보기")
+                Text(stringResource(R.string.login_guest))
             }
             Spacer(Modifier.height(24.dp))
         }
     }
 }
-
-@Composable
-private fun SocialButton(
-    provider: SocialProvider,
-    onClick: () -> Unit
-) {
-
-    val (iconRes, bgColor) = when (provider) {
-        SocialProvider.GOOGLE -> R.drawable.ic_google to Color.White
-        SocialProvider.KAKAO -> R.drawable.ic_kakao to Color(0xFFFEE500)
-        SocialProvider.NAVER -> R.drawable.ic_naver to Color(0xFF03C75A)
-    }
-
-    Surface(
-        shape = CircleShape,
-        border = BorderStroke(1.dp, Color.LightGray),
-        color = bgColor,
-        modifier = Modifier
-            .size(48.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Image(
-            painter = painterResource(iconRes),
-            contentDescription = provider.name,
-            modifier = Modifier.padding(14.dp)
-        )
-    }
-}
-
-
-enum class SocialProvider { GOOGLE, KAKAO, NAVER }
 
 @Preview(name = "Empty Form", showBackground = true)
 @Composable

@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">My Application</string>
+
+    <string name="login_title">로그인</string>
+    <string name="login_subtitle">로그인하고\n풍부하게 감성을 채워보세요.</string>
+    <string name="login_loading">로딩중</string>
+    <string name="login_button">로그인</string>
+    <string name="login_signup">회원가입</string>
+    <string name="login_forgot_password">비밀번호를 잊어버렸나요?</string>
+    <string name="login_sns_title">SNS 간편 로그인</string>
+    <string name="login_guest">비회원으로 둘러보기</string>
+
+    <string name="login_email_placeholder">이메일을 입력해주세요.</string>
+    <string name="login_password_placeholder">비밀번호를 입력해주세요.</string>
+
 </resources>

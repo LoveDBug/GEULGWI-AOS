@@ -41,7 +41,6 @@ internal class LoginViewModel @Inject constructor() :
             else -> null
         }
 
-    /** 이메일 변경 Intent */
     fun onEmailChanged(email: String) = intent {
         val error = validateEmail(email)
         reduce {
@@ -49,7 +48,6 @@ internal class LoginViewModel @Inject constructor() :
         }
     }
 
-    /** 비밀번호 변경 Intent */
     fun onPasswordChanged(password: String) = intent {
         val error = validatePassword(password)
         reduce {
@@ -58,18 +56,17 @@ internal class LoginViewModel @Inject constructor() :
     }
 
     fun onLoginClicked() = intent {
-        val mailErr = validateEmail(state.email)
-        val pwErr = validatePassword(state.password)
-        if (mailErr != null || pwErr != null) {
+        val emailError = validateEmail(state.email)
+        val passwordError = validatePassword(state.password)
+        if (emailError != null || passwordError != null) {
             reduce {
-                state.copy(emailError = mailErr, passwordError = pwErr)
+                state.copy(emailError = emailError, passwordError = passwordError)
             }
             return@intent
         }
 
         reduce { state.copy(isLoading = true) }
 
-        // TODO: 실제 API 호출
         delay(1_000)
 
         postSideEffect(LoginSideEffect.NavigateMain)

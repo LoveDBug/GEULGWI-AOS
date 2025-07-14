@@ -1,8 +1,4 @@
 package com.example.myapplication.feature.signup
 
-
-
-
-
-class SignupScreen {
+class SignUpViewModel {
 }
