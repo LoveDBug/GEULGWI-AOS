@@ -7,7 +7,6 @@ import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
-/** ViewModel */
 @HiltViewModel
 internal class SignUpViewModel @Inject constructor() :
     ViewModel(), ContainerHost<SignUpUiState, SignUpSideEffect> {
@@ -42,7 +41,6 @@ internal class SignUpViewModel @Inject constructor() :
         reduce { state.copy(gender = gender) }
     }
 
-    /** 모든 단계의 “다음” 및 마지막 단계의 제출까지 한 번에 처리 */
     fun onNextStep() = intent {
         when (state.currentStep) {
             SignUpStep.Email -> {
@@ -76,18 +74,16 @@ internal class SignUpViewModel @Inject constructor() :
 
             SignUpStep.Profile -> {
                 reduce { state.copy(isLoading = true) }
-                delay(1_000)  // 실제 가입 요청 대신 지연
+                delay(1_000)
                 postSideEffect(SignUpSideEffect.NavigateToMain)
                 return@intent
             }
         }
-        // 유효성 검사 통과 시 다음 단계로
         state.currentStep.next()?.let { next ->
             reduce { state.copy(currentStep = next) }
         }
     }
 
-    /** 이전 단계로 돌아가기 */
     fun onBackStep() = intent {
         state.currentStep.prev()?.let { prev ->
             reduce { state.copy(currentStep = prev) }

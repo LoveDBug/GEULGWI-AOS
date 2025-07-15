@@ -1,79 +1,61 @@
-// src/test/java/com/example/myapplication/LoginViewModelTest.kt
 package com.example.myapplication
 
-import com.example.myapplication.feature.login.LoginUiState
+import app.cash.turbine.test
 import com.example.myapplication.feature.login.LoginViewModel
-import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Rule
+import kotlin.test.assertEquals
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @Test
+    fun `이메일 유효성 검사 테스트`() = runTest {
+        val viewModel = LoginViewModel()
 
-    private lateinit var viewModel: LoginViewModel
+        viewModel.container.stateFlow.test {
+            // initial state
+            awaitItem()
 
-    @Before
-    fun setup() {
-        viewModel = LoginViewModel()
+            // when
+            viewModel.onEmailChanged("invalid-email")
+
+            // then
+            val state = awaitItem()
+            assertEquals("invalid-email", state.email)
+            assertEquals("유효한 이메일을 입력해주세요.", state.emailError)
+        }
     }
 
     @Test
-    fun `잘못된 이메일 입력 시 emailError가 설정된다`() = runTest {
-        val states = mutableListOf<LoginUiState>()
-        // 1) stateFlow 구독
-        viewModel.container.stateFlow
-            .onEach { states += it }
-            .launchIn(this)
+    fun `비밀번호 유효성 검사 테스트`() = runTest {
+        val viewModel = LoginViewModel()
 
-        // 2) 인텐트 호출
-        viewModel.onEmailChanged("invalid-email")
+        viewModel.container.stateFlow.test {
+            awaitItem()
+            viewModel.onPasswordChanged("short")
 
-        // 3) 스케줄러 진행
-        advanceUntilIdle()
-
-        // 4) 마지막 상태 검증
-        val last = states.last()
-        assertEquals("invalid-email", last.email)
-        assertEquals("유효한 이메일을 입력해주세요.", last.emailError)
+            val state = awaitItem()
+            assertEquals("short", state.password)
+            assertEquals("대소문자·숫자·특수문자 포함 8~16자", state.passwordError)
+        }
     }
 
     @Test
-    fun `비밀번호 입력 시 passwordError가 설정된다`() = runTest {
-        val states = mutableListOf<LoginUiState>()
-        viewModel.container.stateFlow
-            .onEach { states += it }
-            .launchIn(this)
+    fun `빈 자격증명 로그인 시 에러 발생`() = runTest {
+        val viewModel = LoginViewModel()
 
-        viewModel.onPasswordChanged("short")
-        advanceUntilIdle()
+        viewModel.container.stateFlow.test {
+            awaitItem()
+            viewModel.onLoginClicked()
 
-        val last = states.last()
-        assertEquals("short", last.password)
-        assertEquals("대소문자·숫자·특수문자 포함 8~16자", last.passwordError)
-    }
+            val state = awaitItem()
+            assertEquals("이메일을 입력해주세요.", state.emailError)
+            assertEquals("비밀번호를 입력해주세요.", state.passwordError)
+        }
 
-    @Test
-    fun `빈 자격 증명으로 로그인 클릭 시 상태만 검증한다`() = runTest {
-        val states = mutableListOf<LoginUiState>()
-        viewModel.container.stateFlow
-            .onEach { states += it }
-            .launchIn(this)
-
-        // 빈 이메일·비밀번호로 로그인 클릭
-        viewModel.onLoginClicked()
-        advanceUntilIdle()
-
-        val last = states.last()
-        assertEquals("이메일을 입력해주세요.", last.emailError)
-        assertEquals("비밀번호를 입력해주세요.", last.passwordError)
+        viewModel.container.sideEffectFlow.test {
+            val effect = awaitItem()
+            assert(effect is com.example.myapplication.feature.login.LoginSideEffect.ShowError)
+        }
     }
 }
