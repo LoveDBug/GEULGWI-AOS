@@ -16,6 +16,8 @@ cache:
 
 ktlint:
   stage: lint
+  tags:
+    - shared-runner1
   image: openjdk:17-jdk-slim
   before_script:
     - chmod +x ./gradlew
