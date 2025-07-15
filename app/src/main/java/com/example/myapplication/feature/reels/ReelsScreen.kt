@@ -1,5 +1,6 @@
 package com.example.myapplication.feature.reels
 
+import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,15 +14,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,11 +41,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import com.example.myapplication.R
+import com.example.myapplication.feature.main.excludeSystemBars
 import com.example.myapplication.ui.theme.grey
 import com.example.myapplication.ui.theme.white
 import kotlinx.coroutines.delay
@@ -74,6 +82,21 @@ internal fun ReelsRoute(
     var glims by remember { mutableStateOf(listOf<Glim>()) }
     var isLoading by remember { mutableStateOf(false) }
 
+    val view = LocalView.current
+
+    LaunchedEffect(view) {
+        val window = (view.context as android.app.Activity).window
+        val controller = WindowCompat.getInsetsController(window, view)
+
+        // 다크테마 적용
+        controller.isAppearanceLightStatusBars = false
+        controller.isAppearanceLightNavigationBars = false
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
+            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+        )
+    }
+
     // 초기 데이터 로드
     LaunchedEffect(Unit) {
         glims = loadInitialGlims()
@@ -86,6 +109,8 @@ internal fun ReelsRoute(
         graphicsLayer = graphicsLayer,
         fileName = "Glim_${System.currentTimeMillis()}.jpg"
     )
+
+
 
     // 마지막 페이지 근처에서 새 데이터 로드
     LaunchedEffect(pagerState.currentPage) {
@@ -103,43 +128,51 @@ internal fun ReelsRoute(
             }
         }
     }
+    CompositionLocalProvider(LocalContentColor provides Color.White) {
+        MaterialTheme(
+            colorScheme = darkColorScheme(), // 다크 컬러 스킴 적용
+            typography = MaterialTheme.typography,
+            shapes = MaterialTheme.shapes
+        ) {
 
-    VerticalPager(
-        state = pagerState,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .drawWithCache {
-                onDrawWithContent {
-                    // 화면을 GraphicsLayer에 그리기
-                    graphicsLayer.record {
-                        this@onDrawWithContent.drawContent()
+            VerticalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding.excludeSystemBars())
+                    .drawWithCache {
+                        onDrawWithContent {
+                            // 화면을 GraphicsLayer에 그리기
+                            graphicsLayer.record {
+                                this@onDrawWithContent.drawContent()
+                            }
+                            drawLayer(graphicsLayer)
+                        }
                     }
-                    drawLayer(graphicsLayer)
-                }
+            ) { page ->
+
+                GlimItem(
+                    modifier = Modifier.fillMaxSize(),
+                    isLike = glims[page].isLike,
+                    likes = glims[page].likes,
+                    onLikeClick = {
+                        // glims 상태 업데이트 알림을 위한 새로운 리스트 생성
+                        glims = glims.mapIndexed { index, glim ->
+                            if (index == page) {
+                                val newIsLike = !glim.isLike
+                                glim.copy(
+                                    isLike = newIsLike,
+                                    likes = if (newIsLike) glim.likes + 1 else glim.likes - 1
+                                )
+                            } else {
+                                glim
+                            }
+                        }
+                    },
+                    onCaptureClick = captureAction
+                )
             }
-    ) { page ->
-
-        GlimItem(
-            modifier = Modifier.fillMaxSize(),
-            isLike = glims[page].isLike,
-            likes = glims[page].likes,
-            onLikeClick = {
-                // glims 상태 업데이트 알림을 위한 새로운 리스트 생성
-                glims = glims.mapIndexed { index, glim ->
-                    if (index == page) {
-                        val newIsLike = !glim.isLike
-                        glim.copy(
-                            isLike = newIsLike,
-                            likes = if (newIsLike) glim.likes + 1 else glim.likes - 1
-                        )
-                    } else {
-                        glim
-                    }
-                }
-            },
-            onCaptureClick = captureAction
-        )
+        }
     }
 }
 
@@ -168,13 +201,14 @@ fun GlimItem(
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(vertical = 16.dp, horizontal = 8.dp)
+                .systemBarsPadding()
                 .align(Alignment.BottomEnd),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             IconButton(onClick = onCaptureClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_download), contentDescription = null,
-                    tint = white
+                    
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -188,14 +222,14 @@ fun GlimItem(
                             else R.drawable.ic_favorite
                         ),
                         contentDescription = null,
-                        tint = white
+                        
                     )
                 }
                 Text(
                     "$likes",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
-                    color = white
+                    
                 )
             }
 
@@ -203,14 +237,14 @@ fun GlimItem(
                 Icon(
                     painter = painterResource(R.drawable.ic_share),
                     contentDescription = null,
-                    tint = white
+                    
                 )
             }
 
             IconButton(onClick = {}) {
                 Icon(
                     painter = painterResource(R.drawable.ic_more), contentDescription = null,
-                    tint = white
+                    
                 )
             }
         }
@@ -257,7 +291,6 @@ fun GlimBookContent(
                 Text(
                     text = "$bookName ($pageInfo)",
                     style = MaterialTheme.typography.labelLarge,
-                    color = white,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
