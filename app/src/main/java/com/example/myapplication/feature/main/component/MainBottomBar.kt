@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.app.GlimApplication
 import com.example.myapplication.feature.main.MainTab
 import kotlinx.collections.immutable.ImmutableList
 
@@ -38,7 +37,7 @@ import kotlinx.collections.immutable.ImmutableList
 //}
 @Composable
 internal fun MainBottomBar(
-    visible: Boolean = true,
+    visible: Boolean,
     tabs: ImmutableList<MainTab>,
     currentTab: MainTab?,
     onTabSelected: (MainTab) -> Unit,
@@ -55,24 +54,30 @@ internal fun MainBottomBar(
                 if(currentTab != MainTab.REELS && currentTab != MainTab.POST) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = (0.2).dp)
                 }
-                Row(
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = fadeIn() + slideIn { IntOffset(0, it.height) },
+                    exit = fadeOut() + slideOut { IntOffset(0, it.height) }
                 ) {
-                    tabs.forEach { tab ->
-                        MainBottomBarItem(
-                            tab = tab,
-                            selected = tab == currentTab,
-                            iconTint = iconTint,
-                            onClick = {
-                                if (tab != currentTab) {
-                                    onTabSelected(tab)
-                                }
-                            },
-                        )
+                    Row(
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .fillMaxWidth()
+                            .height(64.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        tabs.forEach { tab ->
+                            MainBottomBarItem(
+                                tab = tab,
+                                selected = tab == currentTab,
+                                iconTint = iconTint,
+                                onClick = {
+                                    if (tab != currentTab) {
+                                        onTabSelected(tab)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }

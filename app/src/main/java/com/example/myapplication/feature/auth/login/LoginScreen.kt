@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.login
+package com.example.myapplication.feature.auth.login
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +30,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.GlimTopBar
 import com.example.myapplication.core.ui.TitleAlignment
-import com.example.myapplication.feature.login.component.EmailInputTextField
-import com.example.myapplication.feature.login.component.GlimButton
-import com.example.myapplication.feature.login.component.PasswordInputTextField
-import com.example.myapplication.feature.login.component.SocialButton
-import com.example.myapplication.feature.login.component.SocialProvider
+import com.example.myapplication.feature.auth.login.component.EmailInputTextField
+import com.example.myapplication.feature.auth.login.component.GlimButton
+import com.example.myapplication.feature.auth.login.component.PasswordInputTextField
+import com.example.myapplication.feature.auth.login.component.SocialButton
+import com.example.myapplication.feature.auth.login.component.SocialProvider
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 /**

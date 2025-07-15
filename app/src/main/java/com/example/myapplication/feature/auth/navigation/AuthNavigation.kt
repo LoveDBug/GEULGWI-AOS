@@ -1,23 +1,23 @@
-package com.example.myapplication.feature.login.navigation
+package com.example.myapplication.feature.auth.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.myapplication.core.navigation.Route
-import com.example.myapplication.feature.login.LoginRoute
+import com.example.myapplication.feature.auth.login.LoginRoute
+import com.example.myapplication.feature.auth.signup.SignUpRoute
 
-fun NavController.navigateToLogin() {
-    navigate(Route.Login)
-}
 
-fun NavGraphBuilder.loginNavGraph(
+fun NavGraphBuilder.authNavGraph(
     padding: PaddingValues,
-    popBackStack: () -> Unit,
 ) {
     composable<Route.Login> {
         LoginRoute(
             padding = padding
+        )
+    }
+    composable<Route.SignUp> {
+        SignUpRoute(
         )
     }
 }

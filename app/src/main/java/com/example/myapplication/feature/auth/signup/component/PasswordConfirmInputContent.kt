@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.signup.component
+package com.example.myapplication.feature.auth.signup.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
-import com.example.myapplication.feature.login.component.PasswordInputTextField
+import com.example.myapplication.feature.auth.login.component.PasswordInputTextField
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable

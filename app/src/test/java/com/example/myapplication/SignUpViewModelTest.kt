@@ -1,9 +1,9 @@
 package com.example.myapplication
 
 import app.cash.turbine.test
-import com.example.myapplication.feature.signup.SignUpStep
-import com.example.myapplication.feature.signup.SignUpViewModel
-import com.example.myapplication.feature.signup.SignUpSideEffect
+import com.example.myapplication.feature.auth.signup.SignUpStep
+import com.example.myapplication.feature.auth.signup.SignUpViewModel
+import com.example.myapplication.feature.auth.signup.SignUpSideEffect
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
