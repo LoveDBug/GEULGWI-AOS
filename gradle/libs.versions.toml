@@ -21,6 +21,7 @@ ksp = "2.1.21-2.0.2"
 orbit = "10.0.0"
 composeMaterialIconsExtended = "1.6.2"
 kotlinxCoroutinesTest = "1.7.3"
+textRecognitionKorean = "16.0.1"
 turbine = "1.2.0"
 
 [libraries]
@@ -58,6 +59,7 @@ hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-comp
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+text-recognition-korean = { module = "com.google.mlkit:text-recognition-korean", version.ref = "textRecognitionKorean" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
