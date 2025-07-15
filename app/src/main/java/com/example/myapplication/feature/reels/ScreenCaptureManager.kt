@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.GraphicsLayer
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,11 +21,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 /**
  * 화면 캡처를 위한 유틸리티 클래스
  */
-class ScreenCaptureManager(private val context: Context) {
+class ScreenCaptureManager @Inject constructor(
+    @ApplicationContext val context: Context
+) {
     
     /**
      * GraphicsLayer를 캡처해서 갤러리에 저장

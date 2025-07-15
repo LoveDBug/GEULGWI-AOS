@@ -1,10 +1,9 @@
 package com.example.myapplication.feature.post
-import PostIntent
-import PostSideEffect
-import PostState
-import android.content.Context
+
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.core.domain.model.GlimInput
+import com.example.myapplication.core.domain.usecase.glim.UploadGlimUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -16,38 +15,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
+    private val uploadGlimUseCase: UploadGlimUseCase,
     private val imageProcessor: ImageProcessor
 ) : ViewModel(), ContainerHost<PostState, PostSideEffect> {
 
     override val container: Container<PostState, PostSideEffect> = container(PostState())
 
-    fun handleIntent(intent: PostIntent) = intent {
-        when (intent) {
-            PostIntent.Initialize -> handleInitialize()
-            PostIntent.OnBackPressed -> handleBackPressed()
-            PostIntent.ConfirmExit -> handleConfirmExit()
-            PostIntent.CancelExit -> handleCancelExit()
-            is PostIntent.OnTextChanged -> handleTextChanged(intent.text)
-            is PostIntent.OnFocusChanged -> handleFocusChanged(intent.focused)
-            is PostIntent.OnTextImageSelected -> handleTextImageSelected(intent.uri, intent.context)
-            is PostIntent.OnBackgroundImageSelected -> handleBackgroundImageSelected(intent.uri)
-            PostIntent.OnTextExtractionClick -> handleTextExtractionClick()
-            PostIntent.OnBackgroundImageClick -> handleBackgroundImageClick()
-            PostIntent.OnCompleteClick -> handleCompleteClick()
-            PostIntent.OnClearFocusClick -> handleClearFocusClick()
-            PostIntent.IncreaseFontSize -> handleIncreaseFontSize()
-            PostIntent.DecreaseFontSize -> handleDecreaseFontSize()
-            PostIntent.ToggleBold -> handleToggleBold()
-            PostIntent.ToggleItalic -> handleToggleItalic()
-            else -> {}
-        }
-    }
-
-    private fun handleInitialize() = intent {
+    fun initialize() = intent {
         // 초기화 로직
     }
 
-    private fun handleBackPressed() = intent {
+    fun backPressed() = intent {
         if (state.recognizedText.isNotEmpty()) {
             reduce { state.copy(showExitDialog = true) }
         } else {
@@ -55,48 +33,71 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    private fun handleConfirmExit() = intent {
+    fun confirmExit() = intent {
         reduce { state.copy(showExitDialog = false) }
         postSideEffect(PostSideEffect.NavigateBack)
     }
 
-    private fun handleCancelExit() = intent {
+    fun cancelExit() = intent {
         reduce { state.copy(showExitDialog = false) }
     }
 
-    private fun handleTextChanged(text: String) = intent {
+    fun textChanged(text: String) = intent {
         reduce { state.copy(recognizedText = text) }
     }
 
-    private fun handleFocusChanged(focused: Boolean) = intent {
+    // 텍스트 포커스 관리
+    fun onTextFocusChanged(focused: Boolean) = intent {
         reduce { state.copy(isFocused = focused) }
-        if (!focused) {
-            postSideEffect(PostSideEffect.ClearFocus)
+    }
+
+    // 배경 클릭 시 포커스 해제
+    fun onBackgroundClick() = intent {
+        reduce { state.copy(isFocused = false) }
+    }
+
+    // 드래그 시작
+    fun onDragStart() = intent {
+        reduce { state.copy(isDragging = true) }
+    }
+
+    // 드래그 종료
+    fun onDragEnd() = intent {
+        reduce { state.copy(isDragging = false) }
+    }
+
+    // 텍스트 위치 업데이트
+    fun updateTextPosition(deltaX: Float, deltaY: Float) = intent {
+        val currentPosition = state.textPosition
+        reduce {
+            state.copy(
+                textPosition = currentPosition.copy(
+                    offsetX = currentPosition.offsetX + deltaX,
+                    offsetY = currentPosition.offsetY + deltaY
+                )
+            )
         }
     }
 
-    private fun handleTextImageSelected(uri: Uri?, context: Context) = intent {
+    fun textImageSelected(uri: Uri?) = intent {
         uri?.let {
-            reduce { 
+            reduce {
                 state.copy(
                     selectedImageUri = uri,
-                    isProcessing = true,
                     error = null
                 )
             }
-            
+
             try {
-                val result = imageProcessor.recognizeText(context, uri)
-                reduce { 
+                val result = imageProcessor.recognizeText(uri)
+                reduce {
                     state.copy(
                         recognizedText = result,
-                        isProcessing = false
                     )
                 }
             } catch (e: Exception) {
-                reduce { 
+                reduce {
                     state.copy(
-                        isProcessing = false,
                         error = "텍스트 인식 실패: ${e.message}"
                     )
                 }
@@ -105,31 +106,46 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    private fun handleBackgroundImageSelected(uri: Uri?) = intent {
+    fun backgroundImageSelected(uri: Uri?) = intent {
         reduce { state.copy(backgroundImageUri = uri) }
     }
 
-    private fun handleTextExtractionClick() = intent {
+    fun textExtractionClick() = intent {
         postSideEffect(PostSideEffect.OpenTextImagePicker)
     }
 
-    private fun handleBackgroundImageClick() = intent {
+    fun backgroundImageClick() = intent {
         postSideEffect(PostSideEffect.OpenBackgroundImagePicker)
     }
 
-    private fun handleCompleteClick() = intent {
-        // 완료 로직 구현
-        postSideEffect(PostSideEffect.NavigateBack)
+    fun completeClick() = intent {
+        state.backgroundImageUri?.let { uri ->
+            try {
+                val bitmap = imageProcessor.uriToBitmap(uri)
+                    ?: throw IllegalStateException("이미지를 불러올 수 없습니다.")
+
+                uploadGlimUseCase(
+                    GlimInput(bitmap, state.bookId)
+                ).collect { isSuccess ->
+                    if (isSuccess) {
+                        postSideEffect(PostSideEffect.ShowToast("글림이 성공적으로 업로드되었습니다."))
+                        postSideEffect(PostSideEffect.NavigateBack)
+                    } else {
+                        postSideEffect(PostSideEffect.ShowToast("글림 업로드에 실패했습니다."))
+                    }
+                }
+            } catch (e: Exception) {
+                postSideEffect(PostSideEffect.ShowToast("업로드 중 오류가 발생했습니다: ${e.message}"))
+            }
+        } ?: run {
+            postSideEffect(PostSideEffect.ShowToast("배경 이미지를 선택해주세요."))
+        }
     }
 
-    private fun handleClearFocusClick() = intent {
-        postSideEffect(PostSideEffect.ClearFocus)
-    }
-
-    private fun handleIncreaseFontSize() = intent {
+    fun increaseFontSize() = intent {
         val currentStyle = state.textStyle
         if (currentStyle.fontSize < 32f) {
-            reduce { 
+            reduce {
                 state.copy(
                     textStyle = currentStyle.copy(fontSize = currentStyle.fontSize + 2f)
                 )
@@ -137,10 +153,10 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    private fun handleDecreaseFontSize() = intent {
+    fun decreaseFontSize() = intent {
         val currentStyle = state.textStyle
         if (currentStyle.fontSize > 12f) {
-            reduce { 
+            reduce {
                 state.copy(
                     textStyle = currentStyle.copy(fontSize = currentStyle.fontSize - 2f)
                 )
@@ -148,18 +164,18 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    private fun handleToggleBold() = intent {
+    fun toggleBold() = intent {
         val currentStyle = state.textStyle
-        reduce { 
+        reduce {
             state.copy(
                 textStyle = currentStyle.copy(isBold = !currentStyle.isBold)
             )
         }
     }
 
-    private fun handleToggleItalic() = intent {
+    fun toggleItalic() = intent {
         val currentStyle = state.textStyle
-        reduce { 
+        reduce {
             state.copy(
                 textStyle = currentStyle.copy(isItalic = !currentStyle.isItalic)
             )

@@ -1,14 +1,15 @@
-package com.example.myapplication.feature.post
+package com.example.myapplication.feature.post.component
 
-import PostIntent
-import TextStyleState
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -23,35 +24,92 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.feature.post.TextStyleState
+import kotlin.math.roundToInt
 
 @Composable
 fun EditableTextField(
     text: String,
     textStyle: TextStyleState,
     isFocused: Boolean,
-    onIntent: (PostIntent) -> Unit,
+    isDragging: Boolean,
+    offsetX: Float,
+    offsetY: Float,
+    onTextChange: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
+    onDragStart: () -> Unit,
+    onDragEnd: () -> Unit,
+    onDrag: (Float, Float) -> Unit,
+    onIncreaseFontSize: () -> Unit,
+    onDecreaseFontSize: () -> Unit,
+    onToggleBold: () -> Unit,
+    onToggleItalic: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    // isFocused 상태가 변경될 때 실제 포커스도 동기화
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            focusRequester.requestFocus()
+        } else {
+            focusRequester.freeFocus()
+        }
+    }
+
     Column(
         modifier = modifier
+            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
             .padding(48.dp)
             .border(
-                width = 0.2.dp,
-                color = if (isFocused) Color.White else Color.Transparent,
+                width = if (isFocused || isDragging) 1.dp else 0.2.dp,
+                color = when {
+                    isDragging -> Color.Yellow
+                    isFocused -> Color.White
+                    else -> Color.Transparent
+                },
             )
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        // 롱클릭 시 드래그 모드 시작
+                        onDragStart()
+                    }
+                )
+            }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        // 드래그 시작은 롱클릭에서 처리하므로 여기서는 빈 값
+                    },
+                    onDragEnd = {
+                        onDragEnd()
+                    }
+                ) { change, _ ->
+                    if (isDragging) {
+                        onDrag(change.position.x, change.position.y)
+                    }
+                }
+            }
     ) {
         TextField(
             value = text,
-            onValueChange = { onIntent(PostIntent.OnTextChanged(it)) },
+            onValueChange = onTextChange,
             textStyle = MaterialTheme.typography.bodyMedium.copy(
                 textAlign = TextAlign.Center,
                 lineHeight = 40.sp,
@@ -65,17 +123,38 @@ fun EditableTextField(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            modifier = Modifier.onFocusChanged { focusState ->
-                onIntent(PostIntent.OnFocusChanged(focusState.isFocused))
-            }
+            readOnly = isDragging, // 드래그 중에는 텍스트 편집 불가
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    onFocusChanged(focusState.isFocused)
+                }
         )
 
-        if (isFocused) {
+        if (isFocused && !isDragging) {
             TextConfigContent(
                 textStyle = textStyle,
-                onIntent = onIntent
+                onIncreaseFontSize = onIncreaseFontSize,
+                onDecreaseFontSize = onDecreaseFontSize,
+                onToggleBold = onToggleBold,
+                onToggleItalic = onToggleItalic
             )
             Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // 드래그 모드 표시
+        if (isDragging) {
+            Surface(
+                color = Color.Yellow.copy(alpha = 0.8f),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    text = "이동 중...",
+                    color = Color.Black,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
         }
     }
 }
@@ -83,7 +162,10 @@ fun EditableTextField(
 @Composable
 fun TextConfigContent(
     textStyle: TextStyleState,
-    onIntent: (PostIntent) -> Unit,
+    onIncreaseFontSize: () -> Unit,
+    onDecreaseFontSize: () -> Unit,
+    onToggleBold: () -> Unit,
+    onToggleItalic: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -98,7 +180,8 @@ fun TextConfigContent(
         ) {
             TextSizeControls(
                 fontSize = textStyle.fontSize,
-                onIntent = onIntent
+                onIncreaseFontSize = onIncreaseFontSize,
+                onDecreaseFontSize = onDecreaseFontSize
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -106,7 +189,8 @@ fun TextConfigContent(
             TextStyleControls(
                 isBold = textStyle.isBold,
                 isItalic = textStyle.isItalic,
-                onIntent = onIntent
+                onToggleBold = onToggleBold,
+                onToggleItalic = onToggleItalic
             )
         }
     }
@@ -115,14 +199,15 @@ fun TextConfigContent(
 @Composable
 private fun TextSizeControls(
     fontSize: Float,
-    onIntent: (PostIntent) -> Unit
+    onIncreaseFontSize: () -> Unit,
+    onDecreaseFontSize: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         IconButton(
-            onClick = { onIntent(PostIntent.DecreaseFontSize) },
+            onClick = onDecreaseFontSize,
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
@@ -141,7 +226,7 @@ private fun TextSizeControls(
         )
 
         IconButton(
-            onClick = { onIntent(PostIntent.IncreaseFontSize) },
+            onClick = onIncreaseFontSize,
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
@@ -158,13 +243,14 @@ private fun TextSizeControls(
 private fun TextStyleControls(
     isBold: Boolean,
     isItalic: Boolean,
-    onIntent: (PostIntent) -> Unit
+    onToggleBold: () -> Unit,
+    onToggleItalic: () -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         IconButton(
-            onClick = { onIntent(PostIntent.ToggleBold) },
+            onClick = onToggleBold,
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
@@ -176,7 +262,7 @@ private fun TextStyleControls(
         }
 
         IconButton(
-            onClick = { onIntent(PostIntent.ToggleItalic) },
+            onClick = onToggleItalic,
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
@@ -191,8 +277,9 @@ private fun TextStyleControls(
 
 @Composable
 fun ActionButtons(
-    isProcessing: Boolean,
-    onIntent: (PostIntent) -> Unit,
+    onTextExtractionClick: () -> Unit,
+    onBackgroundImageClick: () -> Unit,
+    onCompleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -203,21 +290,20 @@ fun ActionButtons(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.End
     ) {
-        TextButton(onClick = { onIntent(PostIntent.OnCompleteClick) }) {
+        TextButton(onClick = onCompleteClick) {
             Text("완료")
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         ActionButton(
-            onClick = { onIntent(PostIntent.OnTextExtractionClick) },
-            enabled = !isProcessing,
+            onClick = onTextExtractionClick,
             iconRes = R.drawable.ic_recognize,
             contentDescription = "텍스트 인식"
         )
 
         ActionButton(
-            onClick = { onIntent(PostIntent.OnBackgroundImageClick) },
+            onClick = onBackgroundImageClick,
             iconRes = R.drawable.ic_image,
             contentDescription = "배경 이미지"
         )
