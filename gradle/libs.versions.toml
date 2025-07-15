@@ -13,6 +13,7 @@ material3 = "1.3.2"
 navigationCompose = "2.9.1"
 kotlinxSerializationJson = "1.9.0"
 kotlinxCollectionsImmutable = "0.4.0"
+playServicesMlkitTextRecognition = "19.0.1"
 hilt = "2.56.2"
 hiltExt = "1.2.0"
 hiltNavigationCompose = "1.2.0"
@@ -51,6 +52,7 @@ orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.r
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit" }
 orbit-test = { group = "org.orbit-mvi", name = "orbit-test", version.ref = "orbit" }
 
+play-services-mlkit-text-recognition = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition", version.ref = "playServicesMlkitTextRecognition" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }

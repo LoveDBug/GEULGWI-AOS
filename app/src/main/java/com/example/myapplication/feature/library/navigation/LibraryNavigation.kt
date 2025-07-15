@@ -7,7 +7,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.example.myapplication.core.navigation.BottomTabRoute
 import com.example.myapplication.feature.library.LibraryRoute
-import com.example.myapplication.feature.post.PostRoute
 
 fun NavController.navigateToLibrary(navOptions: NavOptions) {
     navigate(BottomTabRoute.Library, navOptions)

@@ -43,20 +43,16 @@ internal fun MainBottomBar(
     currentTab: MainTab?,
     onTabSelected: (MainTab) -> Unit,
 ) {
-    val (backgroundColor, iconTint) = if (currentTab == MainTab.REELS) {
+    val (backgroundColor, iconTint) = if (currentTab == MainTab.REELS || currentTab == MainTab.POST) {
         Color(0xFF1C1B1F) to MaterialTheme.colorScheme.surface
     } else {
         Color.White to MaterialTheme.colorScheme.onSurface
     }
 
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn() + slideIn { IntOffset(0, it.height) },
-        exit = fadeOut() + slideOut { IntOffset(0, it.height) },
-    ) {
+        if(currentTab != MainTab.POST)
         Box(modifier = Modifier.background(backgroundColor)) {
             Column {
-                if(currentTab != MainTab.REELS) {
+                if(currentTab != MainTab.REELS && currentTab != MainTab.POST) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = (0.2).dp)
                 }
                 Row(
@@ -81,7 +77,7 @@ internal fun MainBottomBar(
                 }
             }
         }
-    }
+
 }
 
 @Composable

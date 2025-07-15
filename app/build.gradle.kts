@@ -59,9 +59,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material3)
 
-    //Coil
+    // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
+
+    // ML Kit Text Recognition
+    implementation(libs.play.services.mlkit.text.recognition)
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
 
     // Orbit MVI
     implementation(libs.orbit.core)
