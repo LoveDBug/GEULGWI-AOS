@@ -2,24 +2,30 @@ package com.example.myapplication
 
 import app.cash.turbine.test
 import com.example.myapplication.feature.login.LoginViewModel
+import com.example.myapplication.feature.login.LoginSideEffect
+import com.example.myapplication.core.navigation.Route
+import com.example.myapplication.core.navigation.Navigator
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertEquals
 import org.junit.Test
 
 class LoginViewModelTest {
 
+    // fake Navigator
+    private class FakeNavigator : Navigator {
+        override suspend fun navigate(route: Route, saveState: Boolean, launchSingleTop: Boolean) { /* no-op */ }
+        override suspend fun navigateBack() { /* no-op */ }
+    }
+
     @Test
     fun `이메일 유효성 검사 테스트`() = runTest {
-        val viewModel = LoginViewModel()
+        val viewModel = LoginViewModel(FakeNavigator())
 
         viewModel.container.stateFlow.test {
-            // initial state
-            awaitItem()
+            awaitItem() // initial
 
-            // when
             viewModel.onEmailChanged("invalid-email")
 
-            // then
             val state = awaitItem()
             assertEquals("invalid-email", state.email)
             assertEquals("유효한 이메일을 입력해주세요.", state.emailError)
@@ -28,7 +34,7 @@ class LoginViewModelTest {
 
     @Test
     fun `비밀번호 유효성 검사 테스트`() = runTest {
-        val viewModel = LoginViewModel()
+        val viewModel = LoginViewModel(FakeNavigator())
 
         viewModel.container.stateFlow.test {
             awaitItem()
@@ -42,8 +48,9 @@ class LoginViewModelTest {
 
     @Test
     fun `빈 자격증명 로그인 시 에러 발생`() = runTest {
-        val viewModel = LoginViewModel()
+        val viewModel = LoginViewModel(FakeNavigator())
 
+        // 상태 흐름 검증
         viewModel.container.stateFlow.test {
             awaitItem()
             viewModel.onLoginClicked()
@@ -53,9 +60,10 @@ class LoginViewModelTest {
             assertEquals("비밀번호를 입력해주세요.", state.passwordError)
         }
 
+        // 사이드 이펙트 흐름 검증
         viewModel.container.sideEffectFlow.test {
             val effect = awaitItem()
-            assert(effect is com.example.myapplication.feature.login.LoginSideEffect.ShowError)
+            assert(effect is LoginSideEffect.ShowError)
         }
     }
 }
