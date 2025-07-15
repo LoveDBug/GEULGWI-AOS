@@ -18,7 +18,8 @@ class LoginViewModelTest {
             launchSingleTop: Boolean,
         ) { /* no-op */ }
 
-        override suspend fun navigateBack() { /* no-op */ }
+        override suspend fun navigateBack() {
+        /* no-op */ }
     }
 
     @Test
