@@ -105,6 +105,7 @@ private fun SignUpScreen(
                     onValueChange = onCodeChanged,
                     error = state.codeError
                 )
+
                 SignUpStep.Password -> PasswordConfirmInputContent(
                     password = state.password,
                     onPasswordChange = onPasswordChanged,

@@ -15,7 +15,6 @@ data class SignUpUiState(
     val passwordError: String? = null,
     val confirmPasswordError: String? = null
 ) {
-    /** 현재 단계에 필요한 입력이 채워졌는지 검사 */
     val isStepValid: Boolean
         get() = when (currentStep) {
             SignUpStep.Email -> email.isNotBlank()
