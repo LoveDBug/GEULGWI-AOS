@@ -1,9 +1,11 @@
 package com.example.myapplication.feature.post.component
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.feature.post.TextStyleState
 import kotlin.math.roundToInt
+// 더 간단한 방식: Box로 감싸서 테두리 영역에 드래그 감지
 
 @Composable
 fun EditableTextField(
@@ -63,7 +66,6 @@ fun EditableTextField(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    // isFocused 상태가 변경될 때 실제 포커스도 동기화
     LaunchedEffect(isFocused) {
         if (isFocused) {
             focusRequester.requestFocus()
@@ -72,12 +74,12 @@ fun EditableTextField(
         }
     }
 
-    Column(
+    Box(
         modifier = modifier
             .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
             .padding(48.dp)
             .border(
-                width = if (isFocused || isDragging) 1.dp else 0.2.dp,
+                width = 1.dp,
                 color = when {
                     isDragging -> Color.Yellow
                     isFocused -> Color.White
@@ -85,75 +87,65 @@ fun EditableTextField(
                 },
             )
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = {
-                        // 롱클릭 시 드래그 모드 시작
-                        onDragStart()
-                    }
-                )
-            }
-            .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
-                        // 드래그 시작은 롱클릭에서 처리하므로 여기서는 빈 값
+                        onDragStart()
                     },
                     onDragEnd = {
                         onDragEnd()
                     }
-                ) { change, _ ->
-                    if (isDragging) {
-                        onDrag(change.position.x, change.position.y)
-                    }
+                ) { change, dragAmount ->
+                    onDrag(dragAmount.x, dragAmount.y)
                 }
             }
     ) {
-        TextField(
-            value = text,
-            onValueChange = onTextChange,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                textAlign = TextAlign.Center,
-                lineHeight = 40.sp,
-                fontSize = textStyle.fontSizeUnit,
-                fontWeight = textStyle.fontWeight,
-                fontStyle = textStyle.fontStyle
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            readOnly = isDragging, // 드래그 중에는 텍스트 편집 불가
-            modifier = Modifier
-                .focusRequester(focusRequester)
-                .onFocusChanged { focusState ->
-                    onFocusChanged(focusState.isFocused)
-                }
-        )
-
-        if (isFocused && !isDragging) {
-            TextConfigContent(
-                textStyle = textStyle,
-                onIncreaseFontSize = onIncreaseFontSize,
-                onDecreaseFontSize = onDecreaseFontSize,
-                onToggleBold = onToggleBold,
-                onToggleItalic = onToggleItalic
+        Column {
+            TextField(
+                value = text,
+                onValueChange = onTextChange,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    textAlign = TextAlign.Center,
+                    lineHeight = 40.sp,
+                    fontSize = textStyle.fontSizeUnit,
+                    fontWeight = textStyle.fontWeight,
+                    fontStyle = textStyle.fontStyle
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                readOnly = isDragging,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        onFocusChanged(focusState.isFocused)
+                    }
             )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
 
-        // 드래그 모드 표시
-        if (isDragging) {
-            Surface(
-                color = Color.Yellow.copy(alpha = 0.8f),
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Text(
-                    text = "이동 중...",
-                    color = Color.Black,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            if (isFocused && !isDragging) {
+                TextConfigContent(
+                    textStyle = textStyle,
+                    onIncreaseFontSize = onIncreaseFontSize,
+                    onDecreaseFontSize = onDecreaseFontSize,
+                    onToggleBold = onToggleBold,
+                    onToggleItalic = onToggleItalic
                 )
+            }
+
+            if (isDragging) {
+                Surface(
+                    color = Color.Yellow.copy(alpha = 0.8f),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Text(
+                        text = "이동 중...",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
             }
         }
     }
