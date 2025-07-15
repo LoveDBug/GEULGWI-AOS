@@ -9,8 +9,7 @@ internal fun ProfileRoute(
     padding: PaddingValues,
     popBackStack: () -> Unit,
 ) {
-
     Text(
-        text = "Profile"
+        text = "Profile",
     )
 }

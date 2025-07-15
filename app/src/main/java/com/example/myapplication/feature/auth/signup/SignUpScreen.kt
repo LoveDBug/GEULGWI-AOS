@@ -27,19 +27,17 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-internal fun SignUpRoute(
-    viewModel: SignUpViewModel = hiltViewModel()
-) {
+internal fun SignUpRoute(viewModel: SignUpViewModel = hiltViewModel()) {
     val state = viewModel.collectAsState().value
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
             SignUpSideEffect.NavigateToMain -> {
-                //onNavigateMain()
+                // onNavigateMain()
             }
 
             is SignUpSideEffect.ShowToast ->
-                /* TODO: Toast(effect.message) */
+                // TODO: Toast(effect.message)
                 Unit
         }
     }
@@ -54,7 +52,7 @@ internal fun SignUpRoute(
         onBirthYearChanged = viewModel::onBirthYearChanged,
         onGenderSelected = viewModel::onGenderSelected,
         onNextStep = viewModel::onNextStep,
-        onBackStep = viewModel::onBackStep
+        onBackStep = viewModel::onBackStep,
     )
 }
 
@@ -69,7 +67,7 @@ private fun SignUpScreen(
     onBirthYearChanged: (String) -> Unit,
     onGenderSelected: (String) -> Unit,
     onNextStep: () -> Unit,
-    onBackStep: () -> Unit
+    onBackStep: () -> Unit,
 ) {
     BackHandler(enabled = state.currentStep != SignUpStep.Email) {
         onBackStep()
@@ -82,47 +80,52 @@ private fun SignUpScreen(
             onBack = onBackStep,
             alignment = TitleAlignment.Center,
             titleColor = Color.Black,
-            titleSize = 20.sp
+            titleSize = 20.sp,
         )
 
         ProgressIndicatorBar(progress = state.currentStep.progress)
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             when (state.currentStep) {
-                SignUpStep.Email -> EmailAuthInputContent(
-                    value = state.email,
-                    onValueChange = onEmailChanged,
-                    error = state.emailError
-                )
+                SignUpStep.Email ->
+                    EmailAuthInputContent(
+                        value = state.email,
+                        onValueChange = onEmailChanged,
+                        error = state.emailError,
+                    )
 
-                SignUpStep.Code -> EmailVerificationCodeInputContent(
-                    value = state.code,
-                    onValueChange = onCodeChanged,
-                    error = state.codeError
-                )
+                SignUpStep.Code ->
+                    EmailVerificationCodeInputContent(
+                        value = state.code,
+                        onValueChange = onCodeChanged,
+                        error = state.codeError,
+                    )
 
-                SignUpStep.Password -> PasswordConfirmInputContent(
-                    password = state.password,
-                    onPasswordChange = onPasswordChanged,
-                    confirmPassword = state.confirmPassword,
-                    onConfirmPasswordChange = onConfirmPasswordChanged,
-                    passwordError = state.passwordError,
-                    confirmPasswordError = state.confirmPasswordError
-                )
+                SignUpStep.Password ->
+                    PasswordConfirmInputContent(
+                        password = state.password,
+                        onPasswordChange = onPasswordChanged,
+                        confirmPassword = state.confirmPassword,
+                        onConfirmPasswordChange = onConfirmPasswordChanged,
+                        passwordError = state.passwordError,
+                        confirmPasswordError = state.confirmPasswordError,
+                    )
 
-                SignUpStep.Profile -> UserProfileInputContent(
-                    name = state.name,
-                    onNameChange = onNameChanged,
-                    birthYear = state.birthYear,
-                    onBirthYearChange = onBirthYearChanged,
-                    selectedGender = state.gender,
-                    onGenderSelect = onGenderSelected
-                )
+                SignUpStep.Profile ->
+                    UserProfileInputContent(
+                        name = state.name,
+                        onNameChange = onNameChanged,
+                        birthYear = state.birthYear,
+                        onBirthYearChange = onBirthYearChanged,
+                        selectedGender = state.gender,
+                        onGenderSelect = onGenderSelected,
+                    )
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -130,7 +133,7 @@ private fun SignUpScreen(
             GlimButton(
                 text = stringResource(R.string.login_signup),
                 onClick = onNextStep,
-                enabled = state.isStepValid && !state.isLoading
+                enabled = state.isStepValid && !state.isLoading,
             )
         }
     }
@@ -140,11 +143,12 @@ private fun SignUpScreen(
 @Composable
 private fun PreviewSignUpScreen_EmailStep() {
     SignUpScreen(
-        state = SignUpUiState(
-            currentStep = SignUpStep.Email,
-            email = "user@example.com",
-            emailError = null
-        ),
+        state =
+            SignUpUiState(
+                currentStep = SignUpStep.Email,
+                email = "user@example.com",
+                emailError = null,
+            ),
         onEmailChanged = {},
         onCodeChanged = {},
         onPasswordChanged = {},
@@ -153,7 +157,7 @@ private fun PreviewSignUpScreen_EmailStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {}
+        onBackStep = {},
     )
 }
 
@@ -161,11 +165,12 @@ private fun PreviewSignUpScreen_EmailStep() {
 @Composable
 private fun PreviewSignUpScreen_CodeStep() {
     SignUpScreen(
-        state = SignUpUiState(
-            currentStep = SignUpStep.Code,
-            code = "123456",
-            codeError = null
-        ),
+        state =
+            SignUpUiState(
+                currentStep = SignUpStep.Code,
+                code = "123456",
+                codeError = null,
+            ),
         onEmailChanged = {},
         onCodeChanged = {},
         onPasswordChanged = {},
@@ -174,7 +179,7 @@ private fun PreviewSignUpScreen_CodeStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {}
+        onBackStep = {},
     )
 }
 
@@ -182,13 +187,14 @@ private fun PreviewSignUpScreen_CodeStep() {
 @Composable
 private fun PreviewSignUpScreen_PasswordStep() {
     SignUpScreen(
-        state = SignUpUiState(
-            currentStep = SignUpStep.Password,
-            password = "Aa1!aaaa",
-            confirmPassword = "Aa1!aaaa",
-            passwordError = null,
-            confirmPasswordError = null
-        ),
+        state =
+            SignUpUiState(
+                currentStep = SignUpStep.Password,
+                password = "Aa1!aaaa",
+                confirmPassword = "Aa1!aaaa",
+                passwordError = null,
+                confirmPasswordError = null,
+            ),
         onEmailChanged = {},
         onCodeChanged = {},
         onPasswordChanged = {},
@@ -197,7 +203,7 @@ private fun PreviewSignUpScreen_PasswordStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {}
+        onBackStep = {},
     )
 }
 
@@ -205,12 +211,13 @@ private fun PreviewSignUpScreen_PasswordStep() {
 @Composable
 private fun PreviewSignUpScreen_ProfileStep() {
     SignUpScreen(
-        state = SignUpUiState(
-            currentStep = SignUpStep.Profile,
-            name = "인성",
-            birthYear = "1998",
-            gender = "남성"
-        ),
+        state =
+            SignUpUiState(
+                currentStep = SignUpStep.Profile,
+                name = "인성",
+                birthYear = "1998",
+                gender = "남성",
+            ),
         onEmailChanged = {},
         onCodeChanged = {},
         onPasswordChanged = {},
@@ -219,6 +226,6 @@ private fun PreviewSignUpScreen_ProfileStep() {
         onBirthYearChanged = {},
         onGenderSelected = {},
         onNextStep = {},
-        onBackStep = {}
+        onBackStep = {},
     )
 }

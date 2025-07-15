@@ -7,17 +7,13 @@ import com.example.myapplication.core.navigation.Route
 import com.example.myapplication.feature.auth.login.LoginRoute
 import com.example.myapplication.feature.auth.signup.SignUpRoute
 
-
-fun NavGraphBuilder.authNavGraph(
-    padding: PaddingValues,
-) {
+fun NavGraphBuilder.authNavGraph(padding: PaddingValues) {
     composable<Route.Login> {
         LoginRoute(
-            padding = padding
+            padding = padding,
         )
     }
     composable<Route.SignUp> {
-        SignUpRoute(
-        )
+        SignUpRoute()
     }
 }

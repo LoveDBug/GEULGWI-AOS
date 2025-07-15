@@ -12,40 +12,48 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 @Singleton
-class ImageProcessor @Inject constructor() {
-
-    suspend fun loadBitmap(context: Context, uri: Uri): Bitmap? {
-        return try {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
-            bitmap
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    suspend fun recognizeText(context: Context, uri: Uri): String {
-        return suspendCancellableCoroutine { continuation ->
-            try {
-                val inputImage = InputImage.fromFilePath(context, uri)
-                val recognizer = TextRecognition.getClient(
-                    KoreanTextRecognizerOptions.Builder().build()
-                )
-
-                recognizer.process(inputImage)
-                    .addOnSuccessListener { visionText ->
-                        val result = visionText.text
-                        continuation.resume(
-                            if (result.isEmpty()) "텍스트를 찾을 수 없습니다" else result
-                        )
-                    }
-                    .addOnFailureListener { e ->
-                        continuation.resume("텍스트 인식 실패: ${e.message}")
-                    }
+class ImageProcessor
+    @Inject
+    constructor() {
+        suspend fun loadBitmap(
+            context: Context,
+            uri: Uri,
+        ): Bitmap? {
+            return try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val bitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
+                bitmap
             } catch (e: Exception) {
-                continuation.resume("이미지 로드 실패: ${e.message}")
+                null
+            }
+        }
+
+        suspend fun recognizeText(
+            context: Context,
+            uri: Uri,
+        ): String {
+            return suspendCancellableCoroutine { continuation ->
+                try {
+                    val inputImage = InputImage.fromFilePath(context, uri)
+                    val recognizer =
+                        TextRecognition.getClient(
+                            KoreanTextRecognizerOptions.Builder().build(),
+                        )
+
+                    recognizer.process(inputImage)
+                        .addOnSuccessListener { visionText ->
+                            val result = visionText.text
+                            continuation.resume(
+                                if (result.isEmpty()) "텍스트를 찾을 수 없습니다" else result,
+                            )
+                        }
+                        .addOnFailureListener { e ->
+                            continuation.resume("텍스트 인식 실패: ${e.message}")
+                        }
+                } catch (e: Exception) {
+                    continuation.resume("이미지 로드 실패: ${e.message}")
+                }
             }
         }
     }
-}

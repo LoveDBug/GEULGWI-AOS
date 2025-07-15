@@ -1,0 +1,26 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+      when: always
+    - when: never
+
+
+stages:
+  - lint
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+ktlint:
+  stage: lint
+  image: openjdk:17-jdk-slim
+  before_script:
+    - chmod +x ./gradlew
+  script:
+    - echo "🔍 Running ktlintCheck..."
+    - ./gradlew ktlintCheck
+
+

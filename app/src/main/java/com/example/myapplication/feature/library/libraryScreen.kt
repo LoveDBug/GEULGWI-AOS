@@ -9,8 +9,7 @@ internal fun LibraryRoute(
     padding: PaddingValues,
     popBackStack: () -> Unit,
 ) {
-
     Text(
-        text = "Library"
+        text = "Library",
     )
 }

@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication.feature.main.MainTab
 import kotlinx.collections.immutable.ImmutableList
 
-//enum class TabTheme(val isDarkMode: Boolean, val backgroundColor: Color, val color: Color) {
+// enum class TabTheme(val isDarkMode: Boolean, val backgroundColor: Color, val color: Color) {
 //    LIGHT(false, MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.outline),
 //    DARK(false, MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.outline),
-//}
+// }
 @Composable
 internal fun MainBottomBar(
     visible: Boolean,
@@ -42,28 +42,30 @@ internal fun MainBottomBar(
     currentTab: MainTab?,
     onTabSelected: (MainTab) -> Unit,
 ) {
-    val (backgroundColor, iconTint) = if (currentTab == MainTab.REELS || currentTab == MainTab.POST) {
-        Color(0xFF1C1B1F) to MaterialTheme.colorScheme.surface
-    } else {
-        Color.White to MaterialTheme.colorScheme.onSurface
-    }
+    val (backgroundColor, iconTint) =
+        if (currentTab == MainTab.REELS || currentTab == MainTab.POST) {
+            Color(0xFF1C1B1F) to MaterialTheme.colorScheme.surface
+        } else {
+            Color.White to MaterialTheme.colorScheme.onSurface
+        }
 
-        if(currentTab != MainTab.POST)
+    if (currentTab != MainTab.POST) {
         Box(modifier = Modifier.background(backgroundColor)) {
             Column {
-                if(currentTab != MainTab.REELS && currentTab != MainTab.POST) {
+                if (currentTab != MainTab.REELS && currentTab != MainTab.POST) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = (0.2).dp)
                 }
                 AnimatedVisibility(
                     visible = visible,
                     enter = fadeIn() + slideIn { IntOffset(0, it.height) },
-                    exit = fadeOut() + slideOut { IntOffset(0, it.height) }
+                    exit = fadeOut() + slideOut { IntOffset(0, it.height) },
                 ) {
                     Row(
-                        modifier = Modifier
-                            .navigationBarsPadding()
-                            .fillMaxWidth()
-                            .height(64.dp),
+                        modifier =
+                            Modifier
+                                .navigationBarsPadding()
+                                .fillMaxWidth()
+                                .height(64.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         tabs.forEach { tab ->
@@ -82,7 +84,7 @@ internal fun MainBottomBar(
                 }
             }
         }
-
+    }
 }
 
 @Composable
@@ -93,16 +95,17 @@ private fun RowScope.MainBottomBarItem(
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight()
-            .selectable(
-                selected = selected,
-                indication = null,
-                role = null,
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = onClick,
-            ),
+        modifier =
+            Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .selectable(
+                    selected = selected,
+                    indication = null,
+                    role = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = onClick,
+                ),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -111,7 +114,7 @@ private fun RowScope.MainBottomBarItem(
             Icon(
                 imageVector = ImageVector.vectorResource(tab.iconResId),
                 contentDescription = tab.contentDescription,
-                tint = if(selected) iconTint else Color.Gray
+                tint = if (selected) iconTint else Color.Gray,
             )
         }
     }

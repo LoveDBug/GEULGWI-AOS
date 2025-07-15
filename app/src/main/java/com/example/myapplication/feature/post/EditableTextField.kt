@@ -39,41 +39,45 @@ fun EditableTextField(
     textStyle: TextStyleState,
     isFocused: Boolean,
     onIntent: (PostIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .padding(48.dp)
-            .border(
-                width = 0.2.dp,
-                color = if (isFocused) Color.White else Color.Transparent,
-            )
+        modifier =
+            modifier
+                .padding(48.dp)
+                .border(
+                    width = 0.2.dp,
+                    color = if (isFocused) Color.White else Color.Transparent,
+                ),
     ) {
         TextField(
             value = text,
             onValueChange = { onIntent(PostIntent.OnTextChanged(it)) },
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                textAlign = TextAlign.Center,
-                lineHeight = 40.sp,
-                fontSize = textStyle.fontSizeUnit,
-                fontWeight = textStyle.fontWeight,
-                fontStyle = textStyle.fontStyle
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            modifier = Modifier.onFocusChanged { focusState ->
-                onIntent(PostIntent.OnFocusChanged(focusState.isFocused))
-            }
+            textStyle =
+                MaterialTheme.typography.bodyMedium.copy(
+                    textAlign = TextAlign.Center,
+                    lineHeight = 40.sp,
+                    fontSize = textStyle.fontSizeUnit,
+                    fontWeight = textStyle.fontWeight,
+                    fontStyle = textStyle.fontStyle,
+                ),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+            modifier =
+                Modifier.onFocusChanged { focusState ->
+                    onIntent(PostIntent.OnFocusChanged(focusState.isFocused))
+                },
         )
 
         if (isFocused) {
             TextConfigContent(
                 textStyle = textStyle,
-                onIntent = onIntent
+                onIntent = onIntent,
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -84,21 +88,21 @@ fun EditableTextField(
 fun TextConfigContent(
     textStyle: TextStyleState,
     onIntent: (PostIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
         color = Color.Black.copy(alpha = 0.8f),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             TextSizeControls(
                 fontSize = textStyle.fontSize,
-                onIntent = onIntent
+                onIntent = onIntent,
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -106,7 +110,7 @@ fun TextConfigContent(
             TextStyleControls(
                 isBold = textStyle.isBold,
                 isItalic = textStyle.isItalic,
-                onIntent = onIntent
+                onIntent = onIntent,
             )
         }
     }
@@ -115,21 +119,21 @@ fun TextConfigContent(
 @Composable
 private fun TextSizeControls(
     fontSize: Float,
-    onIntent: (PostIntent) -> Unit
+    onIntent: (PostIntent) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         IconButton(
             onClick = { onIntent(PostIntent.DecreaseFontSize) },
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_image),
                 contentDescription = "텍스트 크기 줄이기",
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
 
@@ -137,18 +141,18 @@ private fun TextSizeControls(
             text = "${fontSize.toInt()}",
             color = Color.White,
             style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(horizontal = 4.dp)
+            modifier = Modifier.padding(horizontal = 4.dp),
         )
 
         IconButton(
             onClick = { onIntent(PostIntent.IncreaseFontSize) },
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.icon_post),
                 contentDescription = "텍스트 크기 키우기",
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
     }
@@ -158,32 +162,32 @@ private fun TextSizeControls(
 private fun TextStyleControls(
     isBold: Boolean,
     isItalic: Boolean,
-    onIntent: (PostIntent) -> Unit
+    onIntent: (PostIntent) -> Unit,
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         IconButton(
             onClick = { onIntent(PostIntent.ToggleBold) },
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_title),
                 contentDescription = "굵게",
                 tint = if (isBold) Color.Yellow else Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
 
         IconButton(
             onClick = { onIntent(PostIntent.ToggleItalic) },
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_more),
                 contentDescription = "기울이기",
                 tint = if (isItalic) Color.Yellow else Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
     }
@@ -193,15 +197,16 @@ private fun TextStyleControls(
 fun ActionButtons(
     isProcessing: Boolean,
     onIntent: (PostIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .padding(vertical = 16.dp, horizontal = 8.dp)
-            .systemBarsPadding(),
+        modifier =
+            modifier
+                .fillMaxHeight()
+                .padding(vertical = 16.dp, horizontal = 8.dp)
+                .systemBarsPadding(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.End
+        horizontalAlignment = Alignment.End,
     ) {
         TextButton(onClick = { onIntent(PostIntent.OnCompleteClick) }) {
             Text("완료")
@@ -213,19 +218,19 @@ fun ActionButtons(
             onClick = { onIntent(PostIntent.OnTextExtractionClick) },
             enabled = !isProcessing,
             iconRes = R.drawable.ic_recognize,
-            contentDescription = "텍스트 인식"
+            contentDescription = "텍스트 인식",
         )
 
         ActionButton(
             onClick = { onIntent(PostIntent.OnBackgroundImageClick) },
             iconRes = R.drawable.ic_image,
-            contentDescription = "배경 이미지"
+            contentDescription = "배경 이미지",
         )
 
         ActionButton(
             onClick = { /* 새 텍스트 생성 */ },
             iconRes = R.drawable.ic_title,
-            contentDescription = "새 텍스트"
+            contentDescription = "새 텍스트",
         )
 
         Spacer(modifier = Modifier.height(56.dp))
@@ -237,15 +242,15 @@ private fun ActionButton(
     onClick: () -> Unit,
     iconRes: Int,
     contentDescription: String,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     IconButton(
         onClick = onClick,
-        enabled = enabled
+        enabled = enabled,
     ) {
         Icon(
             painter = painterResource(iconRes),
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
         )
     }
 }

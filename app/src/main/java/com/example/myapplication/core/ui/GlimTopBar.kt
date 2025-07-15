@@ -42,7 +42,7 @@ fun GlimTopBar(
     onBack: () -> Unit = {},
     alignment: TitleAlignment = TitleAlignment.Center,
     titleColor: Color = MaterialTheme.colorScheme.onPrimary,
-    titleSize: TextUnit = 20.sp
+    titleSize: TextUnit = 20.sp,
 ) {
     when (alignment) {
         TitleAlignment.Center -> {
@@ -50,11 +50,12 @@ fun GlimTopBar(
                 title = {
                     Text(
                         text = title,
-                        style = TextStyle(
-                            color = titleColor,
-                            fontSize = titleSize,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        style =
+                            TextStyle(
+                                color = titleColor,
+                                fontSize = titleSize,
+                                fontWeight = FontWeight.SemiBold,
+                            ),
                     )
                 },
                 navigationIcon = {
@@ -63,14 +64,15 @@ fun GlimTopBar(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = null,
-                                tint = titleColor
+                                tint = titleColor,
                             )
                         }
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
-                )
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent,
+                    ),
             )
         }
         TitleAlignment.Left -> {
@@ -78,15 +80,16 @@ fun GlimTopBar(
                 title = {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.CenterStart
+                        contentAlignment = Alignment.CenterStart,
                     ) {
                         Text(
                             text = title,
-                            style = TextStyle(
-                                color = titleColor,
-                                fontSize = titleSize,
-                                fontWeight = FontWeight.Medium
-                            )
+                            style =
+                                TextStyle(
+                                    color = titleColor,
+                                    fontSize = titleSize,
+                                    fontWeight = FontWeight.Medium,
+                                ),
                         )
                     }
                 },
@@ -96,14 +99,15 @@ fun GlimTopBar(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = null,
-                                tint = titleColor
+                                tint = titleColor,
                             )
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                    ),
             )
         }
     }
@@ -111,5 +115,5 @@ fun GlimTopBar(
 
 enum class TitleAlignment {
     Center,
-    Left
+    Left,
 }

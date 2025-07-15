@@ -29,7 +29,7 @@ fun PasswordInputTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = stringResource(id = R.string.login_password_placeholder),
-    error: String? = null
+    error: String? = null,
 ) {
     var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -41,30 +41,32 @@ fun PasswordInputTextField(
         singleLine = true,
         isError = error != null,
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.Transparent),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(Color.Transparent),
         label = {
             Text(
                 text = labelText,
-                color = if (error != null)
-                    MaterialTheme.colorScheme.error
-                else
-                    Color.Gray,
-                fontSize = 14.sp
+                color =
+                    if (error != null) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        Color.Gray
+                    },
+                fontSize = 14.sp,
             )
         },
         trailingIcon = {
             IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                 Icon(
                     imageVector = Icons.Filled.Visibility,
-                    contentDescription = if (isPasswordVisible) "비밀번호 숨기기" else "비밀번호 보기"
+                    contentDescription = if (isPasswordVisible) "비밀번호 숨기기" else "비밀번호 보기",
                 )
             }
-        }
+        },
     )
 }
-
 
 @Composable
 @Preview(showBackground = true)
@@ -74,6 +76,6 @@ fun PasswordInputTextFieldPreview() {
     PasswordInputTextField(
         value = text,
         onValueChange = { text = it },
-        error = null
+        error = null,
     )
 }

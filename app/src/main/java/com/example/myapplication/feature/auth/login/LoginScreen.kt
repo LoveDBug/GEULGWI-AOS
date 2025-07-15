@@ -43,7 +43,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 internal fun LoginRoute(
     padding: PaddingValues,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.container.stateFlow.collectAsState()
     val context = LocalContext.current
@@ -66,7 +66,7 @@ internal fun LoginRoute(
         onSignUpClicked = viewModel::onSignUpClicked,
         onForgotPassword = viewModel::onForgotPasswordClicked,
         onSocialLogin = viewModel::onSocialLoginClicked,
-        onGuest = viewModel::onGuestClicked
+        onGuest = viewModel::onGuestClicked,
     )
 }
 
@@ -83,21 +83,22 @@ internal fun LoginScreen(
     onSignUpClicked: () -> Unit,
     onForgotPassword: () -> Unit,
     onSocialLogin: (SocialProvider) -> Unit,
-    onGuest: () -> Unit
+    onGuest: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         GlimTopBar(
             title = stringResource(id = R.string.login_title),
             showBack = false,
             alignment = TitleAlignment.Center,
             titleColor = Color.Black,
-            titleSize = 20.sp
+            titleSize = 20.sp,
         )
 
         Spacer(Modifier.height(48.dp))
@@ -105,7 +106,7 @@ internal fun LoginScreen(
         EmailInputTextField(
             value = state.email,
             onValueChange = onEmailChanged,
-            error = state.emailError
+            error = state.emailError,
         )
 
         Spacer(Modifier.height(16.dp))
@@ -113,18 +114,20 @@ internal fun LoginScreen(
         PasswordInputTextField(
             value = state.password,
             onValueChange = onPasswordChanged,
-            error = state.passwordError
+            error = state.passwordError,
         )
 
         Spacer(Modifier.height(24.dp))
 
         GlimButton(
-            text = if (state.isLoading)
-                stringResource(R.string.login_loading)
-            else
-                stringResource(R.string.login_button),
+            text =
+                if (state.isLoading) {
+                    stringResource(R.string.login_loading)
+                } else {
+                    stringResource(R.string.login_button)
+                },
             onClick = onLoginClicked,
-            enabled = state.isLoginEnabled && !state.isLoading
+            enabled = state.isLoginEnabled && !state.isLoading,
         )
 
         Spacer(Modifier.height(12.dp))
@@ -141,12 +144,12 @@ internal fun LoginScreen(
         Spacer(Modifier.height(24.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             HorizontalDivider(modifier = Modifier.weight(1f))
             Text(
                 stringResource(R.string.login_sns_title),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
             )
             HorizontalDivider(modifier = Modifier.weight(1f))
         }
@@ -154,7 +157,7 @@ internal fun LoginScreen(
         Spacer(Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             SocialButton(SocialProvider.GOOGLE) { onSocialLogin(SocialProvider.GOOGLE) }
             SocialButton(SocialProvider.KAKAO) { onSocialLogin(SocialProvider.KAKAO) }
@@ -182,7 +185,7 @@ fun PreviewLoginScreen_Empty() {
         onSignUpClicked = {},
         onForgotPassword = {},
         onSocialLogin = {},
-        onGuest = {}
+        onGuest = {},
     )
 }
 
@@ -190,12 +193,13 @@ fun PreviewLoginScreen_Empty() {
 @Composable
 fun PreviewLoginScreen_Errors() {
     LoginScreen(
-        state = LoginUiState(
-            email = "invalid-email",
-            password = "short",
-            emailError = "유효한 이메일 형식을 입력해주세요.",
-            passwordError = "8~16자, 영문 대/소문자·숫자·특수문자 포함"
-        ),
+        state =
+            LoginUiState(
+                email = "invalid-email",
+                password = "short",
+                emailError = "유효한 이메일 형식을 입력해주세요.",
+                passwordError = "8~16자, 영문 대/소문자·숫자·특수문자 포함",
+            ),
         padding = PaddingValues(0.dp),
         onEmailChanged = {},
         onPasswordChanged = {},
@@ -203,7 +207,7 @@ fun PreviewLoginScreen_Errors() {
         onSignUpClicked = {},
         onForgotPassword = {},
         onSocialLogin = {},
-        onGuest = {}
+        onGuest = {},
     )
 }
 
@@ -211,10 +215,11 @@ fun PreviewLoginScreen_Errors() {
 @Composable
 fun PreviewLoginScreen_Valid() {
     LoginScreen(
-        state = LoginUiState(
-            email = "user@example.com",
-            password = "Aa1!abcd"
-        ),
+        state =
+            LoginUiState(
+                email = "user@example.com",
+                password = "Aa1!abcd",
+            ),
         padding = PaddingValues(0.dp),
         onEmailChanged = {},
         onPasswordChanged = {},
@@ -222,7 +227,7 @@ fun PreviewLoginScreen_Valid() {
         onSignUpClicked = {},
         onForgotPassword = {},
         onSocialLogin = {},
-        onGuest = {}
+        onGuest = {},
     )
 }
 
@@ -230,11 +235,12 @@ fun PreviewLoginScreen_Valid() {
 @Composable
 fun PreviewLoginScreen_Loading() {
     LoginScreen(
-        state = LoginUiState(
-            email = "user@example.com",
-            password = "Aa1!abcd",
-            isLoading = true
-        ),
+        state =
+            LoginUiState(
+                email = "user@example.com",
+                password = "Aa1!abcd",
+                isLoading = true,
+            ),
         padding = PaddingValues(0.dp),
         onEmailChanged = {},
         onPasswordChanged = {},
@@ -242,6 +248,6 @@ fun PreviewLoginScreen_Loading() {
         onSignUpClicked = {},
         onForgotPassword = {},
         onSocialLogin = {},
-        onGuest = {}
+        onGuest = {},
     )
 }

@@ -11,13 +11,14 @@ fun GlimButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier
-            .fillMaxWidth()
+        modifier =
+            modifier
+                .fillMaxWidth(),
     ) {
         Text(text = text)
     }

@@ -9,8 +9,7 @@ internal fun HomeRoute(
     padding: PaddingValues,
     popBackStack: () -> Unit,
 ) {
-
     Text(
-        text = "home"
+        text = "home",
     )
 }

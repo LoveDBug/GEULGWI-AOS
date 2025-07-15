@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
@@ -57,7 +56,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 internal fun PostRoute(
     padding: PaddingValues,
     popBackStack: () -> Unit,
-    viewModel: PostViewModel = hiltViewModel()
+    viewModel: PostViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
     val context = LocalContext.current
@@ -68,23 +67,26 @@ internal fun PostRoute(
     SystemBarController.SetDarkSystemBars()
 
     // Image launchers
-    val textImageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        viewModel.handleIntent(PostIntent.OnTextImageSelected(uri, context))
-    }
+    val textImageLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent(),
+        ) { uri ->
+            viewModel.handleIntent(PostIntent.OnTextImageSelected(uri, context))
+        }
 
-    val backgroundImageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        viewModel.handleIntent(PostIntent.OnBackgroundImageSelected(uri))
-    }
+    val backgroundImageLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent(),
+        ) { uri ->
+            viewModel.handleIntent(PostIntent.OnBackgroundImageSelected(uri))
+        }
 
     // Background image loading
     val backgroundBitmap by produceState<android.graphics.Bitmap?>(null, state.backgroundImageUri) {
-        value = state.backgroundImageUri?.let { uri ->
-            imageProcessor.loadBitmap(context, uri)
-        }
+        value =
+            state.backgroundImageUri?.let { uri ->
+                imageProcessor.loadBitmap(context, uri)
+            }
     }
 
     // Side effects handling
@@ -116,7 +118,7 @@ internal fun PostRoute(
         state = state,
         backgroundBitmap = backgroundBitmap,
         onIntent = viewModel::handleIntent,
-        modifier = Modifier.padding(padding.excludeSystemBars())
+        modifier = Modifier.padding(padding.excludeSystemBars()),
     )
 }
 
@@ -125,28 +127,30 @@ private fun PostContent(
     state: PostState,
     backgroundBitmap: android.graphics.Bitmap?,
     onIntent: (PostIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     CompositionLocalProvider(LocalContentColor provides Color.White) {
         MaterialTheme(
             colorScheme = darkColorScheme(),
             typography = MaterialTheme.typography,
-            shapes = MaterialTheme.shapes
+            shapes = MaterialTheme.shapes,
         ) {
             Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(Color(0x881C1B1F), Color(0xFF1C1B1F)),
-                            start = Offset(0f, 0f),
-                            end = Offset(0f, Float.POSITIVE_INFINITY)
+                modifier =
+                    modifier
+                        .fillMaxSize()
+                        .background(
+                            brush =
+                                Brush.linearGradient(
+                                    colors = listOf(Color(0x881C1B1F), Color(0xFF1C1B1F)),
+                                    start = Offset(0f, 0f),
+                                    end = Offset(0f, Float.POSITIVE_INFINITY),
+                                ),
                         )
-                    )
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { onIntent(PostIntent.OnClearFocusClick) }
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ) { onIntent(PostIntent.OnClearFocusClick) },
             ) {
                 BackgroundImage(backgroundBitmap)
 
@@ -155,19 +159,20 @@ private fun PostContent(
                     textStyle = state.textStyle,
                     isFocused = state.isFocused,
                     onIntent = onIntent,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
                 )
 
                 ActionButtons(
                     isProcessing = state.isProcessing,
                     onIntent = onIntent,
-                    modifier = Modifier.align(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd),
                 )
 
                 BookInfoSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomEnd)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomEnd),
                 )
 
                 // Exit Dialog
@@ -178,18 +183,18 @@ private fun PostContent(
                         text = { Text("작성 중인 내용이 사라집니다.") },
                         confirmButton = {
                             TextButton(
-                                onClick = { onIntent(PostIntent.ConfirmExit) }
+                                onClick = { onIntent(PostIntent.ConfirmExit) },
                             ) {
                                 Text("나가기")
                             }
                         },
                         dismissButton = {
                             TextButton(
-                                onClick = { onIntent(PostIntent.CancelExit) }
+                                onClick = { onIntent(PostIntent.CancelExit) },
                             ) {
                                 Text("취소")
                             }
-                        }
+                        },
                     )
                 }
             }
@@ -203,41 +208,42 @@ private fun BackgroundImage(bitmap: android.graphics.Bitmap?) {
         Image(
             bitmap = it.asImageBitmap(),
             contentDescription = "Background image",
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(0.6f),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .alpha(0.6f),
+            contentScale = ContentScale.Crop,
         )
     }
 }
 
 @Composable
-fun BookInfoSection(
-    modifier: Modifier = Modifier
-) {
+fun BookInfoSection(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
-            .padding(16.dp)
-            .padding(end = 80.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .padding(16.dp)
+                .padding(end = 80.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = {}) {
             Icon(
                 painter = painterResource(R.drawable.icon_post),
-                contentDescription = null
+                contentDescription = null,
             )
         }
         Spacer(Modifier.height(4.dp))
         Text(
             text = "책 정보 추가",
             style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
     }
 }
 
-private fun createBackgroundBrush() = Brush.linearGradient(
-    colors = listOf(Color(0x881C1B1F), Color(0xFF1C1B1F)),
-    start = Offset(0f, 0f),
-    end = Offset(0f, Float.POSITIVE_INFINITY)
-)
+private fun createBackgroundBrush() =
+    Brush.linearGradient(
+        colors = listOf(Color(0x881C1B1F), Color(0xFF1C1B1F)),
+        start = Offset(0f, 0f),
+        end = Offset(0f, Float.POSITIVE_INFINITY),
+    )

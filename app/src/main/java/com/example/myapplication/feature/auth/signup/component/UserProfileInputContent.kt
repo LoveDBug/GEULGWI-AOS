@@ -31,20 +31,21 @@ fun UserProfileInputContent(
     onGenderSelect: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Text(
             text = stringResource(id = R.string.profile_title),
             style = MaterialTheme.typography.labelSmall,
-            color = Color.Gray
+            color = Color.Gray,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(id = R.string.profile_subtitle),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -55,14 +56,14 @@ fun UserProfileInputContent(
         EmailInputTextField(
             value = name,
             onValueChange = onNameChange,
-            label = stringResource(id = R.string.profile_hint_name)
+            label = stringResource(id = R.string.profile_hint_name),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(id = R.string.profile_note_name),
             style = MaterialTheme.typography.labelSmall,
-            color = Color.Gray
+            color = Color.Gray,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -73,7 +74,7 @@ fun UserProfileInputContent(
         EmailInputTextField(
             value = birthYear,
             onValueChange = onBirthYearChange,
-            label = stringResource(id = R.string.profile_hint_birth)
+            label = stringResource(id = R.string.profile_hint_birth),
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -83,17 +84,17 @@ fun UserProfileInputContent(
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             GenderSelectableButton(
                 text = stringResource(id = R.string.profile_gender_male),
                 isSelected = selectedGender == "남자",
-                onClick = { onGenderSelect("남자") }
+                onClick = { onGenderSelect("남자") },
             )
             GenderSelectableButton(
                 text = stringResource(id = R.string.profile_gender_female),
                 isSelected = selectedGender == "여자",
-                onClick = { onGenderSelect("여자") }
+                onClick = { onGenderSelect("여자") },
             )
         }
     }

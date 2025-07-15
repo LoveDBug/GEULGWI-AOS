@@ -33,9 +33,7 @@ import com.google.mlkit.vision.common.InputImage
 import java.io.IOException
 import java.nio.ByteBuffer
 
-
 class MLKitVisionImage {
-
     private fun imageFromBitmap(bitmap: Bitmap) {
         val rotationDegrees = 0
         // [START image_from_bitmap]
@@ -44,41 +42,59 @@ class MLKitVisionImage {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private fun imageFromMediaImage(mediaImage: Image, rotation: Int) {
+    private fun imageFromMediaImage(
+        mediaImage: Image,
+        rotation: Int,
+    ) {
         // [START image_from_media_image]
         val image = InputImage.fromMediaImage(mediaImage, rotation)
         // [END image_from_media_image]
     }
 
-    private fun imageFromBuffer(byteBuffer: ByteBuffer, rotationDegrees: Int) {
+    private fun imageFromBuffer(
+        byteBuffer: ByteBuffer,
+        rotationDegrees: Int,
+    ) {
         // [START set_metadata]
         // TODO How do we document the FrameMetadata developers need to implement?
         // [END set_metadata]
         // [START image_from_buffer]
-        val image = InputImage.fromByteBuffer(
-            byteBuffer,
-            /* image width */ 480,
-            /* image height */ 360,
-            rotationDegrees,
-            InputImage.IMAGE_FORMAT_NV21 // or IMAGE_FORMAT_YV12
-        )
+        val image =
+            InputImage.fromByteBuffer(
+                byteBuffer,
+                // image width
+                480,
+                // image height
+                360,
+                rotationDegrees,
+                InputImage.IMAGE_FORMAT_NV21, // or IMAGE_FORMAT_YV12
+            )
         // [END image_from_buffer]
     }
 
-    private fun imageFromArray(byteArray: ByteArray, rotationDegrees: Int) {
+    private fun imageFromArray(
+        byteArray: ByteArray,
+        rotationDegrees: Int,
+    ) {
         // [START image_from_array]
-        val image = InputImage.fromByteArray(
-            byteArray,
-            /* image width */ 480,
-            /* image height */ 360,
-            rotationDegrees,
-            InputImage.IMAGE_FORMAT_NV21 // or IMAGE_FORMAT_YV12
-        )
+        val image =
+            InputImage.fromByteArray(
+                byteArray,
+                // image width
+                480,
+                // image height
+                360,
+                rotationDegrees,
+                InputImage.IMAGE_FORMAT_NV21, // or IMAGE_FORMAT_YV12
+            )
 
         // [END image_from_array]
     }
 
-    private fun imageFromPath(context: Context, uri: Uri) {
+    private fun imageFromPath(
+        context: Context,
+        uri: Uri,
+    ) {
         // [START image_from_path]
         val image: InputImage
         try {
@@ -90,13 +106,18 @@ class MLKitVisionImage {
     }
 
     // [START get_rotation]
+
     /**
      * Get the angle by which an image must be rotated given the device's current
      * orientation.
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Throws(CameraAccessException::class)
-    private fun getRotationCompensation(cameraId: String, activity: Activity, isFrontFacing: Boolean): Int {
+    private fun getRotationCompensation(
+        cameraId: String,
+        activity: Activity,
+        isFrontFacing: Boolean,
+    ): Int {
         // Get the device's current rotation relative to its "native" orientation.
         // Then, from the ORIENTATIONS table, look up the angle the image must be
         // rotated to compensate for the device's rotation.
@@ -105,9 +126,10 @@ class MLKitVisionImage {
 
         // Get the device's sensor orientation.
         val cameraManager = activity.getSystemService(CAMERA_SERVICE) as CameraManager
-        val sensorOrientation = cameraManager
-            .getCameraCharacteristics(cameraId)
-            .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
+        val sensorOrientation =
+            cameraManager
+                .getCameraCharacteristics(cameraId)
+                .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
 
         if (isFrontFacing) {
             rotationCompensation = (sensorOrientation + rotationCompensation) % 360
@@ -120,13 +142,16 @@ class MLKitVisionImage {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Throws(CameraAccessException::class)
-    private fun getCompensation(activity: Activity, context: Context, isFrontFacing: Boolean) {
+    private fun getCompensation(
+        activity: Activity,
+        context: Context,
+        isFrontFacing: Boolean,
+    ) {
         // Get the ID of the camera using CameraManager. Then:
         val rotation = getRotationCompensation(MY_CAMERA_ID, activity, isFrontFacing)
     }
 
     companion object {
-
         private val TAG = "MLKIT"
         private val MY_CAMERA_ID = "my_camera_id"
 

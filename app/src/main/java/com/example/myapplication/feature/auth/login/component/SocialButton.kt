@@ -17,33 +17,33 @@ import com.example.myapplication.ui.theme.GlimColor.GoogleColor
 import com.example.myapplication.ui.theme.GlimColor.KakaoColor
 import com.example.myapplication.ui.theme.GlimColor.NaverColor
 
-
 enum class SocialProvider { GOOGLE, KAKAO, NAVER }
 
 @Composable
 fun SocialButton(
     provider: SocialProvider,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-
-    val (iconRes, bgColor) = when (provider) {
-        SocialProvider.GOOGLE -> R.drawable.ic_google to GoogleColor
-        SocialProvider.KAKAO -> R.drawable.ic_kakao to KakaoColor
-        SocialProvider.NAVER -> R.drawable.ic_naver to NaverColor
-    }
+    val (iconRes, bgColor) =
+        when (provider) {
+            SocialProvider.GOOGLE -> R.drawable.ic_google to GoogleColor
+            SocialProvider.KAKAO -> R.drawable.ic_kakao to KakaoColor
+            SocialProvider.NAVER -> R.drawable.ic_naver to NaverColor
+        }
 
     Surface(
         shape = CircleShape,
         border = BorderStroke(1.dp, Color.LightGray),
         color = bgColor,
-        modifier = Modifier
-            .size(48.dp)
-            .clickable(onClick = onClick)
+        modifier =
+            Modifier
+                .size(48.dp)
+                .clickable(onClick = onClick),
     ) {
         Image(
             painter = painterResource(iconRes),
             contentDescription = provider.name,
-            modifier = Modifier.padding(14.dp)
+            modifier = Modifier.padding(14.dp),
         )
     }
 }
