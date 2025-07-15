@@ -59,6 +59,8 @@ dependencies {
     //kotlinx-immutable
     implementation(libs.kotlinx.collections.immutable)
 
+    implementation(libs.play.services.mlkit.text.recognition)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.ext.compiler)
@@ -72,4 +74,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // To recognize Korean script
+    implementation ("com.google.mlkit:text-recognition-korean:16.0.1")
+    implementation ("io.coil-kt:coil-compose:2.4.0")
+    implementation ("org.orbit-mvi:orbit-viewmodel:6.1.0")
+    implementation ("org.orbit-mvi:orbit-compose:6.1.0")
 }

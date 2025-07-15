@@ -26,11 +26,11 @@ private val LightColorScheme = lightColorScheme(
     // 보조 액션이나 정보를 위한 색상
     secondary = GlimColor.LightBlueGreen,
     // secondary 색상 위의 텍스트나 아이콘 색상
-    onSecondary = GlimColor.LightGrey700,
+    onSecondary = GlimColor.LightGray700,
     // secondary 색상의 더 연한 버전, 보조 컨테이너에 사용
-    secondaryContainer = GlimColor.LightGrey400,
+    secondaryContainer = GlimColor.LightGray400,
     // secondaryContainer 위의 텍스트나 아이콘 색상
-    onSecondaryContainer = GlimColor.LightGrey400,
+    onSecondaryContainer = GlimColor.LightGray400,
     // 대비를 위한 액센트 색상
     tertiary = GlimColor.LightPrimary50,
     // tertiary 색상 위의 텍스트나 아이콘 색상
@@ -50,35 +50,35 @@ private val LightColorScheme = lightColorScheme(
     // 앱의 배경색
     background = Color.White,
     // background 위의 텍스트나 아이콘 색상
-    onBackground = GlimColor.LightGrey900,
+    onBackground = GlimColor.LightGray900,
     // 카드, 시트 등 표면 요소의 색상
     surface = Color.White,
     // surface 위의 텍스트나 아이콘 색상
-    onSurface = GlimColor.LightGrey500,
+    onSurface = GlimColor.LightGray500,
     // surface의 변형, 비활성화된 요소나 구분선에 사용
-    surfaceVariant = GlimColor.LightGrey600,
+    surfaceVariant = GlimColor.LightGray600,
     // surface 색상에 적용되는 색조
     surfaceTint = GlimColor.LightRed,
     // surfaceVariant 위의 텍스트나 아이콘 색상
-    onSurfaceVariant = GlimColor.LightGrey600,
+    onSurfaceVariant = GlimColor.LightGray600,
     // 경계선이나 구분선 등에 사용되는 색상
-    outline = GlimColor.LightGrey200,
+    outline = GlimColor.LightGray200,
     // outline의 변형, 덜 강조된 경계선이나 구분선에 사용
-    outlineVariant = GlimColor.LightGrey300,
+    outlineVariant = GlimColor.LightGray300,
     // 배경을 어둡게 하는 반투명 오버레이, 모달 다이얼로그에 사용
-    scrim = GlimColor.LightGrey300,
+    scrim = GlimColor.LightGray300,
     // 높은 강조도의 표면 색상, 강조 요소나 카드에 사용
-    surfaceBright = GlimColor.LightGrey100,
+    surfaceBright = GlimColor.LightGray100,
     // 기본 표면 컨테이너, 카드나 다이얼로그 배경에 사용
     surfaceContainer = Color.White,
     // 높은 대비의 표면 컨테이너, 중요 정보나 액션을 담는 컨테이너
     surfaceContainerHigh = GlimColor.LightPrimary50,
     // 낮은 대비의 표면 컨테이너, 부차적인 정보나 배경 요소에 사용
-    surfaceContainerLow = GlimColor.DarkGrey700,
+    surfaceContainerLow = GlimColor.LightGray200,
     // 역전된 표면 색상, 어두운 배경 위 밝은 요소를 위해 사용
-    inverseSurface = GlimColor.LightGrey100,
+    inverseSurface = GlimColor.LightGray100,
     // inverseSurface 위의 텍스트나 밝은 강조에 사용
-    inverseOnSurface = GlimColor.DarkGrey300,
+    inverseOnSurface = GlimColor.LightGray600,
 )
 
 // Dark Mode 대응 안 할 예정
