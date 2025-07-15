@@ -117,12 +117,11 @@ internal fun ReelsRoute(
         fileName = "Glim_${System.currentTimeMillis()}.jpg"
     )
 
-    // 페이지 변경 감지
-//    LaunchedEffect(pagerState) {
-//        snapshotFlow { pagerState.currentPage }.collect { page ->
-//            viewModel.onPageChanged(page)
-//        }
-//    }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            viewModel.onPageChanged(page)
+        }
+    }
 
     CompositionLocalProvider(LocalContentColor provides Color.White) {
         MaterialTheme(

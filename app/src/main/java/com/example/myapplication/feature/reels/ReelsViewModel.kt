@@ -19,7 +19,6 @@ class ReelsViewModel @Inject constructor(
     override val container: Container<ReelsState, ReelsSideEffect> = container(ReelsState())
 
     fun toggleLike() = intent {
-        // 낙관적 업데이트
         val updatedGlims = state.glims.map { glim ->
             if (glim.id == state.currentGlimId) {
                 val newIsLike = !glim.isLike
@@ -36,26 +35,21 @@ class ReelsViewModel @Inject constructor(
 
         // 서버에 실제 업데이트
         viewModelScope.launch {
-//            try {
-//                toggleLikeUseCase(glimId).collect { success ->
-//                    if (!success) {
-//                        // 실패 시 롤백
-//                        reduce { state.copy(glims = state.glims) }
-//                        postSideEffect(ReelsSideEffect.ShowToast("좋아요 처리에 실패했습니다."))
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                // 실패 시 롤백
-//                val rolledBackGlims = state.glims.map { glim ->
-//                    if (glim.id == glimId) {
-//                        currentGlim
-//                    } else {
-//                        glim
-//                    }
-//                }
-//                reduce { state.copy(glims = rolledBackGlims) }
-//                postSideEffect(ReelsSideEffect.ShowToast("좋아요 처리에 실패했습니다."))
-//            }
+            // TODO: API 호출
+            // toggleLikeUseCase(state.currentGlimId)
+        }
+    }
+
+    fun onPageChanged(page: Int) = intent {
+        // 페이지가 변경될 때 currentGlimId도 업데이트
+        if (page >= 0 && page < state.glims.size) {
+            val currentGlim = state.glims[page]
+            reduce {
+                state.copy(
+                    currentPage = page,
+                    currentGlimId = currentGlim.id
+                )
+            }
         }
     }
 
@@ -75,7 +69,14 @@ class ReelsViewModel @Inject constructor(
     }
 
     fun refresh() = intent {
-        reduce { state.copy(glims = emptyList(), currentPage = 0, hasMoreData = true) }
+        reduce {
+            state.copy(
+                glims = emptyList(),
+                currentPage = 0,
+                currentGlimId = -1,
+                hasMoreData = true
+            )
+        }
         loadInitialGlims()
     }
 
@@ -87,6 +88,7 @@ class ReelsViewModel @Inject constructor(
                 reduce {
                     state.copy(
                         glims = glims,
+                        currentGlimId = glims.firstOrNull()?.id ?: -1, // 첫 번째 글림의 ID 설정
                         isLoading = false,
                         hasMoreData = glims.size >= 10
                     )
@@ -102,5 +104,4 @@ class ReelsViewModel @Inject constructor(
             postSideEffect(ReelsSideEffect.ShowToast("글림을 불러오는데 실패했습니다."))
         }
     }
-
 }
