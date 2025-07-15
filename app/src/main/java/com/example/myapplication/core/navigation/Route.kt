@@ -3,9 +3,10 @@ package com.example.myapplication.core.navigation
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
-    /*
-    *  navbar에 종속되어 있지 않은 화면들
-    * */
+
+    @Serializable
+    data object Login: Route
+
 }
 
 

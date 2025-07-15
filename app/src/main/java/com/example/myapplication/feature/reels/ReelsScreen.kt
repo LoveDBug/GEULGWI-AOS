@@ -54,7 +54,7 @@ import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.core.domain.model.Glim
 import com.example.myapplication.feature.main.excludeSystemBars
-import com.example.myapplication.ui.theme.grey
+import com.example.myapplication.ui.theme.GlimColor.LightGray300
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -292,11 +292,7 @@ fun GlimBookContent(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(
-                    text = author,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = LightGray
-                )
+                Text(text = author, style = MaterialTheme.typography.labelMedium, color = LightGray300)
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = "$bookName ($pageInfo)",
