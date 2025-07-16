@@ -1,9 +1,7 @@
 package com.example.myapplication.feature.post.component
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -270,7 +268,7 @@ private fun TextStyleControls(
 @Composable
 fun ActionButtons(
     onTextExtractionClick: () -> Unit,
-    onBackgroundImageClick: () -> Unit,
+    onBackgroundImageButtonClick: () -> Unit,
     onCompleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -295,7 +293,7 @@ fun ActionButtons(
         )
 
         ActionButton(
-            onClick = onBackgroundImageClick,
+            onClick = onBackgroundImageButtonClick,
             iconRes = R.drawable.ic_image,
             contentDescription = "배경 이미지"
         )

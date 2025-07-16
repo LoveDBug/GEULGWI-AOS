@@ -26,23 +26,22 @@ internal fun PostRoute(
     val state by viewModel.collectAsState()
     val context = LocalContext.current
 
-    // System bars configuration
     SystemBarController.SetDarkSystemBars()
 
-    // Image launchers
+    // 이미지 텍스트 추출
     val textImageLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
         viewModel.textImageSelected(uri)
     }
 
+    // 배경 이미지 선택
     val backgroundImageLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
         viewModel.backgroundImageSelected(uri)
     }
 
-    // Side effects handling
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             PostSideEffect.NavigateBack -> popBackStack()
@@ -54,12 +53,10 @@ internal fun PostRoute(
         }
     }
 
-    // Back handler
     BackHandler {
         viewModel.backPressed()
     }
 
-    // Initialize
     LaunchedEffect(Unit) {
         viewModel.initialize()
     }
