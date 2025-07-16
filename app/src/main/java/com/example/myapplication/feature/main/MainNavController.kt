@@ -10,6 +10,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.navOptions
+import com.example.myapplication.core.navigation.Route
 import com.example.myapplication.feature.reels.navigation.navigateToReels
 import com.example.myapplication.feature.home.navigation.navigateToHome
 import com.example.myapplication.feature.library.navigation.navigateToLibrary
@@ -23,12 +24,17 @@ internal class MainNavController(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = MainTab.HOME.route
+    val startDestination = Route.Login
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
             currentDestination?.hasRoute(tab::class) == true
         }
+
+    @Composable
+    fun shouldShowBottomBar() = MainTab.contains {
+        currentDestination?.hasRoute(it::class) == true
+    }
 
     fun navigate(tab: MainTab) {
         val navOptions = navOptions {

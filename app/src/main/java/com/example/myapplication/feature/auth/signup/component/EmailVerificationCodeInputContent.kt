@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.signup.component
+package com.example.myapplication.feature.auth.signup.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

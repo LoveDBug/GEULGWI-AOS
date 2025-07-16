@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.signup
+package com.example.myapplication.feature.auth.signup
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -17,26 +17,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.GlimTopBar
 import com.example.myapplication.core.ui.TitleAlignment
-import com.example.myapplication.feature.login.component.GlimButton
-import com.example.myapplication.feature.signup.component.EmailAuthInputContent
-import com.example.myapplication.feature.signup.component.EmailVerificationCodeInputContent
-import com.example.myapplication.feature.signup.component.PasswordConfirmInputContent
-import com.example.myapplication.feature.signup.component.ProgressIndicatorBar
-import com.example.myapplication.feature.signup.component.UserProfileInputContent
+import com.example.myapplication.feature.auth.login.component.GlimButton
+import com.example.myapplication.feature.auth.signup.component.EmailAuthInputContent
+import com.example.myapplication.feature.auth.signup.component.EmailVerificationCodeInputContent
+import com.example.myapplication.feature.auth.signup.component.PasswordConfirmInputContent
+import com.example.myapplication.feature.auth.signup.component.ProgressIndicatorBar
+import com.example.myapplication.feature.auth.signup.component.UserProfileInputContent
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun SignUpRoute(
-    onNavigateMain: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            SignUpSideEffect.NavigateToMain ->
-                onNavigateMain()
+            SignUpSideEffect.NavigateToMain -> {
+                //onNavigateMain()
+            }
 
             is SignUpSideEffect.ShowToast ->
                 /* TODO: Toast(effect.message) */

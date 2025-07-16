@@ -1,10 +1,11 @@
-package com.example.myapplication.feature.login
+package com.example.myapplication.feature.auth.login
 
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.core.navigation.Navigator
-import com.example.myapplication.feature.login.component.SocialProvider
+import com.example.myapplication.core.navigation.Route
+import com.example.myapplication.feature.auth.login.component.SocialProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ internal class LoginViewModel @Inject constructor(
         postSideEffect(LoginSideEffect.NavigateMain)
     }
 
-    fun onSignUpClicked() = intent { postSideEffect(LoginSideEffect.NavigateSignUp) }
+    fun onSignUpClicked() = intent { /*postSideEffect(LoginSideEffect.NavigateSignUp)*/ navigator.navigate(Route.SignUp) }
     fun onForgotPasswordClicked() =
         intent { postSideEffect(LoginSideEffect.NavigateForgotPassword) }
 
