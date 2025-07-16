@@ -34,10 +34,6 @@ internal fun SignUpRoute(
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            SignUpSideEffect.NavigateToMain -> {
-                //onNavigateMain()
-            }
-
             is SignUpSideEffect.ShowToast ->
                 /* TODO: Toast(effect.message) */
                 Unit
@@ -118,8 +114,10 @@ private fun SignUpScreen(
                 SignUpStep.Profile -> UserProfileInputContent(
                     name = state.name,
                     onNameChange = onNameChanged,
+                    nameError = state.nameError,
                     birthYear = state.birthYear,
                     onBirthYearChange = onBirthYearChanged,
+                    birthYearError = state.birthYearError,
                     selectedGender = state.gender,
                     onGenderSelect = onGenderSelected
                 )
@@ -128,7 +126,12 @@ private fun SignUpScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             GlimButton(
-                text = stringResource(R.string.login_signup),
+                text = when (state.currentStep) {
+                    SignUpStep.Email -> "인증번호 전송"
+                    SignUpStep.Code -> "인증완료"
+                    SignUpStep.Password -> "확인"
+                    SignUpStep.Profile -> stringResource(R.string.login_signup)
+                },
                 onClick = onNextStep,
                 enabled = state.isStepValid && !state.isLoading
             )
@@ -209,7 +212,9 @@ private fun PreviewSignUpScreen_ProfileStep() {
             currentStep = SignUpStep.Profile,
             name = "인성",
             birthYear = "1998",
-            gender = "남성"
+            gender = "남성",
+            nameError = null,
+            birthYearError = null
         ),
         onEmailChanged = {},
         onCodeChanged = {},
