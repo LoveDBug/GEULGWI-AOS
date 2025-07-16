@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,7 +54,7 @@ internal fun LoginRoute(
             is LoginSideEffect.ShowError ->
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
-            else -> viewModel.navigate(effect)
+            else -> Unit
         }
     }
 
@@ -63,10 +64,10 @@ internal fun LoginRoute(
         onEmailChanged = viewModel::onEmailChanged,
         onPasswordChanged = viewModel::onPasswordChanged,
         onLoginClicked = viewModel::onLoginClicked,
-        onSignUpClicked = viewModel::onSignUpClicked,
-        onForgotPassword = viewModel::onForgotPasswordClicked,
-        onSocialLogin = viewModel::onSocialLoginClicked,
-        onGuest = viewModel::onGuestClicked
+        navigateToSignUp = viewModel::navigateToSignUp,
+        navigateToForgotPassword = viewModel::navigateToForgotPassword,
+        navigateToSocialLogin = viewModel::navigateToSocialLogin,
+        navigateToSignUpOnGuest = viewModel::navigateToMain
     )
 }
 
@@ -80,10 +81,10 @@ internal fun LoginScreen(
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onLoginClicked: () -> Unit,
-    onSignUpClicked: () -> Unit,
-    onForgotPassword: () -> Unit,
-    onSocialLogin: (SocialProvider) -> Unit,
-    onGuest: () -> Unit
+    navigateToSignUp: () -> Unit,
+    navigateToForgotPassword: () -> Unit,
+    navigateToSocialLogin: (SocialProvider) -> Unit,
+    navigateToSignUpOnGuest: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -100,7 +101,14 @@ internal fun LoginScreen(
             titleSize = 20.sp
         )
 
-        Spacer(Modifier.height(48.dp))
+        Text(
+            text = stringResource(id = R.string.login_subtitle),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start
+        )
+
+        Spacer(Modifier.height(40.dp))
 
         EmailInputTextField(
             value = state.email,
@@ -129,11 +137,11 @@ internal fun LoginScreen(
 
         Spacer(Modifier.height(12.dp))
         Row {
-            TextButton(onClick = onSignUpClicked) {
+            TextButton(onClick = navigateToSignUp) {
                 Text(stringResource(id = R.string.login_signup))
             }
             Spacer(Modifier.width(8.dp))
-            TextButton(onClick = onForgotPassword) {
+            TextButton(onClick = navigateToForgotPassword) {
                 Text(stringResource(id = R.string.login_forgot_password))
             }
         }
@@ -156,13 +164,13 @@ internal fun LoginScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SocialButton(SocialProvider.GOOGLE) { onSocialLogin(SocialProvider.GOOGLE) }
-            SocialButton(SocialProvider.KAKAO) { onSocialLogin(SocialProvider.KAKAO) }
-            SocialButton(SocialProvider.NAVER) { onSocialLogin(SocialProvider.NAVER) }
+            SocialButton(SocialProvider.GOOGLE) { navigateToSocialLogin(SocialProvider.GOOGLE) }
+            SocialButton(SocialProvider.KAKAO) { navigateToSocialLogin(SocialProvider.KAKAO) }
+            SocialButton(SocialProvider.NAVER) { navigateToSocialLogin(SocialProvider.NAVER) }
         }
 
         Spacer(Modifier.height(16.dp))
-        TextButton(onClick = onGuest) {
+        TextButton(onClick = navigateToSignUpOnGuest) {
             Text(stringResource(R.string.login_guest))
         }
     }
@@ -179,10 +187,10 @@ fun PreviewLoginScreen_Empty() {
         onEmailChanged = {},
         onPasswordChanged = {},
         onLoginClicked = {},
-        onSignUpClicked = {},
-        onForgotPassword = {},
-        onSocialLogin = {},
-        onGuest = {}
+        navigateToSignUp = {},
+        navigateToForgotPassword = {},
+        navigateToSocialLogin = {},
+        navigateToSignUpOnGuest = {}
     )
 }
 
@@ -200,10 +208,10 @@ fun PreviewLoginScreen_Errors() {
         onEmailChanged = {},
         onPasswordChanged = {},
         onLoginClicked = {},
-        onSignUpClicked = {},
-        onForgotPassword = {},
-        onSocialLogin = {},
-        onGuest = {}
+        navigateToSignUp = {},
+        navigateToForgotPassword = {},
+        navigateToSocialLogin = {},
+        navigateToSignUpOnGuest = {}
     )
 }
 
@@ -219,10 +227,10 @@ fun PreviewLoginScreen_Valid() {
         onEmailChanged = {},
         onPasswordChanged = {},
         onLoginClicked = {},
-        onSignUpClicked = {},
-        onForgotPassword = {},
-        onSocialLogin = {},
-        onGuest = {}
+        navigateToSignUp = {},
+        navigateToForgotPassword = {},
+        navigateToSocialLogin = {},
+        navigateToSignUpOnGuest = {}
     )
 }
 
@@ -239,9 +247,9 @@ fun PreviewLoginScreen_Loading() {
         onEmailChanged = {},
         onPasswordChanged = {},
         onLoginClicked = {},
-        onSignUpClicked = {},
-        onForgotPassword = {},
-        onSocialLogin = {},
-        onGuest = {}
+        navigateToSignUp = {},
+        navigateToForgotPassword = {},
+        navigateToSocialLogin = {},
+        navigateToSignUpOnGuest = {}
     )
 }
