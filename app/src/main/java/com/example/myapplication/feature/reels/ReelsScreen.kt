@@ -1,8 +1,6 @@
 package com.example.myapplication.feature.reels
 
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,13 +19,10 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -38,22 +33,20 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.core.domain.model.Glim
 import com.example.myapplication.feature.main.excludeSystemBars
+import com.example.myapplication.core.ui.DarkThemeScreen
 import com.example.myapplication.ui.theme.GlimColor.LightGray300
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -66,23 +59,9 @@ internal fun ReelsRoute(
 ) {
     val state by viewModel.collectAsState()
     val context = LocalContext.current
-    val view = LocalView.current
-
-    // System bars 설정
-    LaunchedEffect(view) {
-        val window = (view.context as android.app.Activity).window
-        val controller = WindowCompat.getInsetsController(window, view)
-
-        controller.isAppearanceLightStatusBars = false
-        controller.isAppearanceLightNavigationBars = false
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
-            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
-        )
-    }
 
     // 초기 데이터 로드
-    SideEffect  {
+    SideEffect {
         viewModel.refresh()
     }
 
@@ -92,17 +71,22 @@ internal fun ReelsRoute(
             is ReelsSideEffect.ShowToast -> {
                 Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
+
             is ReelsSideEffect.ShareGlim -> {
                 // 공유 기능 구현
                 // shareGlim(context, sideEffect.glim)
             }
+
             is ReelsSideEffect.ShowMoreOptions -> {
                 // 더보기 옵션 표시
                 // showMoreOptions(context, sideEffect.glim)
             }
+
             is ReelsSideEffect.CaptureSuccess -> {
-                Toast.makeText(context, "이미지가 저장되었습니다: ${sideEffect.fileName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "이미지가 저장되었습니다: ${sideEffect.fileName}", Toast.LENGTH_SHORT)
+                    .show()
             }
+
             is ReelsSideEffect.CaptureError -> {
                 Toast.makeText(context, sideEffect.error, Toast.LENGTH_SHORT).show()
             }
@@ -123,51 +107,36 @@ internal fun ReelsRoute(
         }
     }
 
-    CompositionLocalProvider(LocalContentColor provides Color.White) {
-        MaterialTheme(
-            colorScheme = darkColorScheme(),
-            typography = MaterialTheme.typography,
-            shapes = MaterialTheme.shapes
-        ) {
-            if (state.glims.isEmpty() && !state.isLoading) {
-                // 빈 상태 표시
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("글림이 없습니다")
-                }
-            } else {
-                VerticalPager(
-                    state = pagerState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding.excludeSystemBars())
-                        .drawWithCache {
-                            onDrawWithContent {
-                                graphicsLayer.record {
-                                    this@onDrawWithContent.drawContent()
-                                }
-                                drawLayer(graphicsLayer)
-                            }
+    DarkThemeScreen {
+        VerticalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding.excludeSystemBars())
+                .drawWithCache {
+                    onDrawWithContent {
+                        graphicsLayer.record {
+                            this@onDrawWithContent.drawContent()
                         }
-                ) { page ->
-                    val glim = state.glims[page]
+                        drawLayer(graphicsLayer)
+                    }
+                }
+        ) { page ->
+            val glim = state.glims[page]
 
-                    GlimItem(
-                        glim = glim,
-                        modifier = Modifier.fillMaxSize(),
-                        onLikeClick = { viewModel.toggleLike() },
-                        onShareClick = { viewModel.onShareClick() },
-                        onMoreClick = {  },
-                        onCaptureClick = {
-                            captureAction()
-                            viewModel.onCaptureClick("Glim_${System.currentTimeMillis()}.jpg")
-                        }
-                    )
+            GlimItem(
+                glim = glim,
+                modifier = Modifier.fillMaxSize(),
+                onLikeClick = { viewModel.toggleLike() },
+                onShareClick = { viewModel.onShareClick() },
+                onMoreClick = { },
+                onCaptureClick = {
+                    captureAction()
+                    viewModel.onCaptureClick("Glim_${System.currentTimeMillis()}.jpg")
                 }
-            }
+            )
         }
+
     }
 }
 
@@ -291,7 +260,11 @@ fun GlimBookContent(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = author, style = MaterialTheme.typography.labelMedium, color = LightGray300)
+                Text(
+                    text = author,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = LightGray300
+                )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = "$bookName ($pageInfo)",

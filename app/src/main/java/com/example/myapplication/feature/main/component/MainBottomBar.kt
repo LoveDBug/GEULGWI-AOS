@@ -1,10 +1,5 @@
 package com.example.myapplication.feature.main.component
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -26,9 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.app.GlimApplication
 import com.example.myapplication.feature.main.MainTab
 import kotlinx.collections.immutable.ImmutableList
 
@@ -49,11 +42,14 @@ internal fun MainBottomBar(
         Color.White to MaterialTheme.colorScheme.onSurface
     }
 
-        if(currentTab != MainTab.POST)
+    if (currentTab != MainTab.POST) {
         Box(modifier = Modifier.background(backgroundColor)) {
             Column {
-                if(currentTab != MainTab.REELS && currentTab != MainTab.POST) {
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = (0.2).dp)
+                if (currentTab != MainTab.REELS) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outline,
+                        thickness = (0.2).dp
+                    )
                 }
                 Row(
                     modifier = Modifier
@@ -77,6 +73,7 @@ internal fun MainBottomBar(
                 }
             }
         }
+    }
 
 }
 
@@ -106,7 +103,7 @@ private fun RowScope.MainBottomBarItem(
             Icon(
                 imageVector = ImageVector.vectorResource(tab.iconResId),
                 contentDescription = tab.contentDescription,
-                tint = if(selected) iconTint else Color.Gray
+                tint = if (selected) iconTint else Color.Gray
             )
         }
     }
