@@ -84,10 +84,7 @@ internal class SignUpViewModel @Inject constructor(
                     reduce { state.copy(emailError = error) }
                     return@intent
                 }
-                // TODO: 실제로는 여기서 이메일 인증 요청 API 호출
-                reduce { state.copy(isLoading = true) }
-                delay(500) // API 호출 시뮬레이션
-                reduce { state.copy(isLoading = false) }
+
             }
 
             SignUpStep.Code -> {
@@ -97,10 +94,6 @@ internal class SignUpViewModel @Inject constructor(
                     reduce { state.copy(codeError = error) }
                     return@intent
                 }
-                // TODO: 실제로는 여기서 인증 코드 확인 API 호출
-                reduce { state.copy(isLoading = true) }
-                delay(500) // API 호출 시뮬레이션
-                reduce { state.copy(isLoading = false) }
             }
 
             SignUpStep.Password -> {
@@ -138,11 +131,6 @@ internal class SignUpViewModel @Inject constructor(
                     }
                     return@intent
                 }
-
-                // TODO: 실제로는 여기서 회원가입 완료 API 호출
-                reduce { state.copy(isLoading = true) }
-                delay(1_000)
-                reduce { state.copy(isLoading = false) }
                 return@intent
             }
         }
