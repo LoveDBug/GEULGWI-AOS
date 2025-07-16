@@ -2,6 +2,7 @@ package com.example.myapplication.feature.auth.login
 
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.core.navigation.BottomTabRoute
 import com.example.myapplication.core.navigation.Navigator
 import com.example.myapplication.core.navigation.Route
 import com.example.myapplication.feature.auth.login.component.SocialProvider
@@ -48,7 +49,7 @@ internal class LoginViewModel @Inject constructor(
 
     fun navigateToSignUp() = intent { navigator.navigate(Route.SignUp) }
 
-    fun navigateToMain() = intent {}
+    fun navigateToMain() = intent { navigator.navigate(BottomTabRoute.Home) }
 
     fun navigateToForgotPassword() = intent {}
 
