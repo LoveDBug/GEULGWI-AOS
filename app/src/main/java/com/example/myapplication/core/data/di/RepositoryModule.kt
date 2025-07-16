@@ -19,5 +19,4 @@ interface RepositoryModule {
     fun bindGlimRepository(
         repository: FakeGlimRepositoryImpl
     ): FakeGlimRepository
-
 }
