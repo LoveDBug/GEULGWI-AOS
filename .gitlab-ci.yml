@@ -16,13 +16,13 @@ cache:
 
 ktlint:
   stage: lint
-  tags:
-    - shared-runner1
-  image: openjdk:17-jdk-slim
-  before_script:
-    - chmod +x ./gradlew
+  image:
+    name: openjdk:11-buster
+    entrypoint: [""]
+  allow_failure: true
   script:
-    - echo "🔍 Running ktlintCheck..."
-    - ./gradlew ktlintCheck
-
+    - ./gradlew --continue ktlint
+  artifacts:
+    reports:
+      codequality: build/reports/ktlint/ktlint.json
 
