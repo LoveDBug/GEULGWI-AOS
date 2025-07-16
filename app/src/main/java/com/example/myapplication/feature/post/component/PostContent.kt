@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import coil.compose.AsyncImage
 import com.example.myapplication.feature.post.TextStyleState
+import com.example.myapplication.feature.post.component.editabletext.EditableTextField
 
 @Composable
 fun PostContent(

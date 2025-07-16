@@ -26,7 +26,7 @@ internal fun PostRoute(
     val state by viewModel.collectAsState()
     val context = LocalContext.current
 
-    SystemBarController.SetDarkSystemBars()
+//    SystemBarController.SetDarkSystemBars()
 
     // 이미지 텍스트 추출
     val textImageLauncher = rememberLauncherForActivityResult(
