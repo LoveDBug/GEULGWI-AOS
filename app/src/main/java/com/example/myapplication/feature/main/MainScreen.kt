@@ -48,7 +48,6 @@ internal fun MainScreen(navigator: MainNavController = rememberMainNavController
         ) {
             homeNavGraph(
                 padding = innerPadding,
-                popBackStack = navigator::popBackStack,
             )
             postNavGraph(
                 padding = innerPadding,

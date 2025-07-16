@@ -24,6 +24,6 @@ class NavigatorImpl
         }
 
         override suspend fun navigateBack() { channel.send(InternalRoute.NavigateBack)
-            
+
         }
     }

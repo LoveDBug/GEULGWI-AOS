@@ -7,7 +7,7 @@ object GlimColor {
     val LightPrimary800 = Color(0xFFBA3146)
     val LightPrimary700 = Color(0xFFE73D58)
     val LightPrimary500 = Color(0xFFFF748A)
-    val LightPrimary300 = Color(0xFFF895A5)
+    val LightPrimary300 = Color(0xFFFBFBFB)
     val LightPrimary100 = Color(0xFFF3F3F3)
     val LightPrimary50 = Color(0xFFFFF0F3)
 
