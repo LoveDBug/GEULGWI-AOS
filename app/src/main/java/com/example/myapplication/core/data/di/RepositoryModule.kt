@@ -19,4 +19,10 @@ interface RepositoryModule {
     fun bindGlimRepository(
         repository: FakeGlimRepositoryImpl
     ): FakeGlimRepository
+
+    @Singleton
+    @Binds
+    fun bindAuthRepository(
+        repository: AuthRepositoryImpl
+    ): AuthRepository
 }

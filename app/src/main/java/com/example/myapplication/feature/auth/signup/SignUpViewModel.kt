@@ -2,6 +2,8 @@ package com.example.myapplication.feature.auth.signup
 
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.core.domain.usecase.auth.CertifyValidCodeUseCase
+import com.example.myapplication.core.domain.usecase.auth.SignUpUseCase
 import com.example.myapplication.core.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -11,7 +13,9 @@ import org.orbitmvi.orbit.viewmodel.container
 
 @HiltViewModel
 internal class SignUpViewModel @Inject constructor(
-    private val navigator: Navigator
+    private val navigator: Navigator,
+    private val signUpUseCase: SignUpUseCase,
+    private val certifyValidCodeUseCase: CertifyValidCodeUseCase
 ) : ViewModel(), ContainerHost<SignUpUiState, SignUpSideEffect> {
 
     companion object {

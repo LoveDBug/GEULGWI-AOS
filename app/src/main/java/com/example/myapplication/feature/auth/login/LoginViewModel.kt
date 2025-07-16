@@ -2,6 +2,7 @@ package com.example.myapplication.feature.auth.login
 
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.core.domain.usecase.auth.LoginUseCase
 import com.example.myapplication.core.navigation.BottomTabRoute
 import com.example.myapplication.core.navigation.Navigator
 import com.example.myapplication.core.navigation.Route
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
-    private val navigator: Navigator
+    private val navigator: Navigator,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel(), ContainerHost<LoginUiState, LoginSideEffect> {
 
     companion object {
