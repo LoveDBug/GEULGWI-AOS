@@ -1,8 +1,8 @@
 package com.example.myapplication
 
 import app.cash.turbine.test
-import com.example.myapplication.feature.login.LoginViewModel
-import com.example.myapplication.feature.login.LoginSideEffect
+import com.example.myapplication.feature.auth.login.LoginViewModel
+import com.example.myapplication.feature.auth.login.LoginSideEffect
 import com.example.myapplication.core.navigation.Route
 import com.example.myapplication.core.navigation.Navigator
 import kotlinx.coroutines.test.runTest

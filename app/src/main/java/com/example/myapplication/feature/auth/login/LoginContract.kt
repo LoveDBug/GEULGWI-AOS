@@ -1,6 +1,6 @@
-package com.example.myapplication.feature.login
+package com.example.myapplication.feature.auth.login
 
-import com.example.myapplication.feature.login.component.SocialProvider
+import com.example.myapplication.feature.auth.login.component.SocialProvider
 
 data class LoginUiState(
     val email: String = "",

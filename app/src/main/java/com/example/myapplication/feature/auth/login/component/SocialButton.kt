@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.login.component
+package com.example.myapplication.feature.auth.login.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -13,9 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
-import com.example.myapplication.ui.theme.GoogleColor
-import com.example.myapplication.ui.theme.KakaoColor
-import com.example.myapplication.ui.theme.NaverColor
+import com.example.myapplication.ui.theme.GlimColor.GoogleColor
+import com.example.myapplication.ui.theme.GlimColor.KakaoColor
+import com.example.myapplication.ui.theme.GlimColor.NaverColor
+
 
 enum class SocialProvider { GOOGLE, KAKAO, NAVER }
 

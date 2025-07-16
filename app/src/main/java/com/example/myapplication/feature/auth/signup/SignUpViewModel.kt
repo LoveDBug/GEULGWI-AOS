@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.signup
+package com.example.myapplication.feature.auth.signup
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

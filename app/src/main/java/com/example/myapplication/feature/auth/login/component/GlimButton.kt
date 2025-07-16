@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.login.component
+package com.example.myapplication.feature.auth.login.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button

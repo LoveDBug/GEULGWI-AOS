@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.signup
+package com.example.myapplication.feature.auth.signup
 
 data class SignUpUiState(
     val currentStep: SignUpStep = SignUpStep.Email,

@@ -31,7 +31,7 @@ import kotlinx.collections.immutable.ImmutableList
 //}
 @Composable
 internal fun MainBottomBar(
-    visible: Boolean = true,
+    visible: Boolean,
     tabs: ImmutableList<MainTab>,
     currentTab: MainTab?,
     onTabSelected: (MainTab) -> Unit,
@@ -51,24 +51,30 @@ internal fun MainBottomBar(
                         thickness = (0.2).dp
                     )
                 }
-                Row(
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = fadeIn() + slideIn { IntOffset(0, it.height) },
+                    exit = fadeOut() + slideOut { IntOffset(0, it.height) }
                 ) {
-                    tabs.forEach { tab ->
-                        MainBottomBarItem(
-                            tab = tab,
-                            selected = tab == currentTab,
-                            iconTint = iconTint,
-                            onClick = {
-                                if (tab != currentTab) {
-                                    onTabSelected(tab)
-                                }
-                            },
-                        )
+                    Row(
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .fillMaxWidth()
+                            .height(64.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        tabs.forEach { tab ->
+                            MainBottomBarItem(
+                                tab = tab,
+                                selected = tab == currentTab,
+                                iconTint = iconTint,
+                                onClick = {
+                                    if (tab != currentTab) {
+                                        onTabSelected(tab)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }

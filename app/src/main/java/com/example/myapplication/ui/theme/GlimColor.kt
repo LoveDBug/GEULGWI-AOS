@@ -28,4 +28,8 @@ object GlimColor {
     val LightGreen = Color(0xFF15D055)
 
     val MainColor = Color(0xFFF3F3F3)
+
+    val GoogleColor = Color.White
+    val KakaoColor = Color(0xFFFEE500)
+    val NaverColor = Color(0xFF03C75A)
 }
