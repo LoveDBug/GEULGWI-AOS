@@ -45,8 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.core.domain.model.Glim
-import com.example.myapplication.feature.main.excludeSystemBars
 import com.example.myapplication.core.ui.DarkThemeScreen
+import com.example.myapplication.feature.main.excludeSystemBars
 import com.example.myapplication.ui.theme.GlimColor.LightGray300
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -55,7 +55,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 internal fun ReelsRoute(
     padding: PaddingValues,
     popBackStack: () -> Unit,
-    viewModel: ReelsViewModel = hiltViewModel()
+    viewModel: ReelsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
     val context = LocalContext.current
@@ -96,10 +96,11 @@ internal fun ReelsRoute(
     val pagerState = rememberPagerState(pageCount = { state.glims.size })
     val graphicsLayer = rememberGraphicsLayer()
 
-    val captureAction = rememberCaptureAction(
-        graphicsLayer = graphicsLayer,
-        fileName = "Glim_${System.currentTimeMillis()}.jpg"
-    )
+    val captureAction =
+        rememberCaptureAction(
+            graphicsLayer = graphicsLayer,
+            fileName = "Glim_${System.currentTimeMillis()}.jpg",
+        )
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -110,17 +111,18 @@ internal fun ReelsRoute(
     DarkThemeScreen {
         VerticalPager(
             state = pagerState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding.excludeSystemBars())
-                .drawWithCache {
-                    onDrawWithContent {
-                        graphicsLayer.record {
-                            this@onDrawWithContent.drawContent()
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding.excludeSystemBars())
+                    .drawWithCache {
+                        onDrawWithContent {
+                            graphicsLayer.record {
+                                this@onDrawWithContent.drawContent()
+                            }
+                            drawLayer(graphicsLayer)
                         }
-                        drawLayer(graphicsLayer)
-                    }
-                }
+                    },
         ) { page ->
             val glim = state.glims[page]
 
@@ -133,10 +135,9 @@ internal fun ReelsRoute(
                 onCaptureClick = {
                     captureAction()
                     viewModel.onCaptureClick("Glim_${System.currentTimeMillis()}.jpg")
-                }
+                },
             )
         }
-
     }
 }
 
@@ -147,7 +148,7 @@ fun GlimItem(
     onLikeClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
     onMoreClick: () -> Unit = {},
-    onCaptureClick: () -> Unit = {}
+    onCaptureClick: () -> Unit = {},
 ) {
     Box(modifier = modifier) {
         AsyncImage(
@@ -156,64 +157,69 @@ fun GlimItem(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.example_glim_2),
-            error = painterResource(R.drawable.example_glim_2)
+            error = painterResource(R.drawable.example_glim_2),
         )
 
         GlimBookContent(
             modifier = Modifier.align(Alignment.BottomEnd),
             author = glim.bookAuthor,
             bookName = glim.bookTitle,
-            pageInfo = glim.pageInfo.ifEmpty { "p.51" }
+            pageInfo = glim.pageInfo.ifEmpty { "p.51" },
         )
 
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(vertical = 16.dp, horizontal = 8.dp)
-                .systemBarsPadding()
-                .align(Alignment.BottomEnd),
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .padding(vertical = 16.dp, horizontal = 8.dp)
+                    .systemBarsPadding()
+                    .align(Alignment.BottomEnd),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             IconButton(onClick = onCaptureClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_download),
-                    contentDescription = "다운로드"
+                    contentDescription = "다운로드",
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 IconButton(onClick = onLikeClick) {
                     Icon(
-                        painter = painterResource(
-                            if (glim.isLike) R.drawable.ic_favorite_fill
-                            else R.drawable.ic_favorite
-                        ),
+                        painter =
+                            painterResource(
+                                if (glim.isLike) {
+                                    R.drawable.ic_favorite_fill
+                                } else {
+                                    R.drawable.ic_favorite
+                                },
+                            ),
                         contentDescription = "좋아요",
-                        tint = if (glim.isLike) Color.Red else Color.White
+                        tint = if (glim.isLike) Color.Red else Color.White,
                     )
                 }
                 Text(
                     "${glim.likes}",
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
 
             IconButton(onClick = onShareClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_share),
-                    contentDescription = "공유"
+                    contentDescription = "공유",
                 )
             }
 
             IconButton(onClick = onMoreClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_more),
-                    contentDescription = "더보기"
+                    contentDescription = "더보기",
                 )
             }
         }
@@ -228,22 +234,25 @@ fun GlimBookContent(
     pageInfo: String,
 ) {
     Surface(
-        modifier = modifier
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(Color(0x001C1B1F), Color(0xFF1C1B1F)),
-                    start = Offset(0f, 0f),
-                    end = Offset(0f, Float.POSITIVE_INFINITY)
-                )
-            ),
-        color = Color.Transparent
+        modifier =
+            modifier
+                .background(
+                    brush =
+                        Brush.linearGradient(
+                            colors = listOf(Color(0x001C1B1F), Color(0xFF1C1B1F)),
+                            start = Offset(0f, 0f),
+                            end = Offset(0f, Float.POSITIVE_INFINITY),
+                        ),
+                ),
+        color = Color.Transparent,
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .padding(end = 80.dp),
+            modifier =
+                Modifier
+                    .padding(16.dp)
+                    .padding(end = 80.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImage(
                 model = "", // 책 이미지 URL이 있다면 사용
@@ -252,18 +261,18 @@ fun GlimBookContent(
                 alpha = 0.8f,
                 contentScale = ContentScale.FillHeight,
                 placeholder = painterResource(R.drawable.ic_launcher_background),
-                error = painterResource(R.drawable.ic_launcher_background)
+                error = painterResource(R.drawable.ic_launcher_background),
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Text(
                     text = author,
                     style = MaterialTheme.typography.labelMedium,
-                    color = LightGray300
+                    color = LightGray300,
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
@@ -271,7 +280,7 @@ fun GlimBookContent(
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

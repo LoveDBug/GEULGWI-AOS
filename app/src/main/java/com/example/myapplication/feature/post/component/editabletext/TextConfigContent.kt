@@ -21,21 +21,21 @@ fun TextConfigContent(
     onDecreaseFontSize: () -> Unit,
     onToggleBold: () -> Unit,
     onToggleItalic: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
         color = Color.Black.copy(alpha = 0.8f),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             TextSizeControls(
                 onIncreaseFontSize = onIncreaseFontSize,
-                onDecreaseFontSize = onDecreaseFontSize
+                onDecreaseFontSize = onDecreaseFontSize,
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -44,7 +44,7 @@ fun TextConfigContent(
                 isBold = textStyle.isBold,
                 isItalic = textStyle.isItalic,
                 onToggleBold = onToggleBold,
-                onToggleItalic = onToggleItalic
+                onToggleItalic = onToggleItalic,
             )
         }
     }

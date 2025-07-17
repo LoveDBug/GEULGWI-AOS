@@ -19,11 +19,11 @@ fun DarkThemeScreen(content: @Composable () -> Unit) {
     LaunchedEffect(view) {
         systemUiController.setSystemBarsColor(
             color = Color.Transparent,
-            darkIcons = false
+            darkIcons = false,
         )
         systemUiController.setNavigationBarColor(
             color = Color.Black,
-            darkIcons = false
+            darkIcons = false,
         )
     }
 
@@ -31,17 +31,17 @@ fun DarkThemeScreen(content: @Composable () -> Unit) {
         onDispose {
             systemUiController.setSystemBarsColor(
                 color = Color.Transparent,
-                darkIcons = true
+                darkIcons = true,
             )
             systemUiController.setNavigationBarColor(
                 color = Color.White,
-                darkIcons = true
+                darkIcons = true,
             )
         }
     }
-    
+
     MaterialTheme(
-        colorScheme = darkColorScheme()
+        colorScheme = darkColorScheme(),
     ) {
         CompositionLocalProvider(LocalContentColor provides Color.White) {
             content()

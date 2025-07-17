@@ -8,8 +8,11 @@ import androidx.compose.ui.unit.sp
 
 sealed interface PostSideEffect {
     data object NavigateBack : PostSideEffect
+
     data object OpenTextImagePicker : PostSideEffect
+
     data object OpenBackgroundImagePicker : PostSideEffect
+
     data class ShowToast(val message: String) : PostSideEffect
 }
 
@@ -24,13 +27,13 @@ data class PostState(
     val isDragging: Boolean = false,
     val bookId: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
 )
 
 data class TextStyleState(
     val fontSize: Float = 16f,
     val isBold: Boolean = false,
-    val isItalic: Boolean = false
+    val isItalic: Boolean = false,
 ) {
     val fontSizeUnit: TextUnit get() = fontSize.sp
     val fontWeight: FontWeight get() = if (isBold) FontWeight.Bold else FontWeight.Normal
@@ -39,5 +42,5 @@ data class TextStyleState(
 
 data class TextPosition(
     val offsetX: Float = 0f,
-    val offsetY: Float = 0f
+    val offsetY: Float = 0f,
 )

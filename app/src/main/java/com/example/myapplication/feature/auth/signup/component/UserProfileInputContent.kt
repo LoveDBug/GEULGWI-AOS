@@ -35,20 +35,21 @@ fun UserProfileInputContent(
     onGenderSelect: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Text(
             text = stringResource(id = R.string.profile_title),
             style = MaterialTheme.typography.labelSmall,
-            color = Color.Gray
+            color = Color.Gray,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(id = R.string.profile_subtitle),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -62,7 +63,7 @@ fun UserProfileInputContent(
             label = { Text(stringResource(id = R.string.profile_hint_name)) },
             isError = nameError != null,
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -71,13 +72,13 @@ fun UserProfileInputContent(
             Text(
                 text = nameError,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
             )
         } else {
             Text(
                 text = stringResource(id = R.string.profile_note_name),
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray
+                color = Color.Gray,
             )
         }
 
@@ -93,7 +94,7 @@ fun UserProfileInputContent(
             isError = birthYearError != null,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 
         if (birthYearError != null) {
@@ -101,7 +102,7 @@ fun UserProfileInputContent(
             Text(
                 text = birthYearError,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
             )
         }
 
@@ -112,17 +113,17 @@ fun UserProfileInputContent(
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             GenderSelectableButton(
                 text = stringResource(id = R.string.profile_gender_male),
                 isSelected = selectedGender == "남자",
-                onClick = { onGenderSelect("남자") }
+                onClick = { onGenderSelect("남자") },
             )
             GenderSelectableButton(
                 text = stringResource(id = R.string.profile_gender_female),
                 isSelected = selectedGender == "여자",
-                onClick = { onGenderSelect("여자") }
+                onClick = { onGenderSelect("여자") },
             )
         }
     }

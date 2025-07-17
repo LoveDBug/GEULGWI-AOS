@@ -12,10 +12,9 @@ import retrofit2.Retrofit
 @Module
 @InstallIn(SingletonComponent::class)
 object ServiceModule {
-
     @Provides
     @Singleton
     fun provideAuthService(
-        @Named("default") retrofit: Retrofit
+        @Named("default") retrofit: Retrofit,
     ): AuthService = retrofit.create(AuthService::class.java)
 }

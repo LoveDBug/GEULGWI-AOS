@@ -8,15 +8,17 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-internal class SplashViewModel @Inject constructor() :
+internal class SplashViewModel
+    @Inject
+    constructor() :
     ViewModel(), ContainerHost<SplashUiState, SplashSideEffect> {
-
-    override val container = container<SplashUiState, SplashSideEffect>(
-        initialState = SplashUiState.Loading
-    ).apply {
-        intent {
-            delay(1500)
-            postSideEffect(SplashSideEffect.NavigateToLogin)
-        }
+        override val container =
+            container<SplashUiState, SplashSideEffect>(
+                initialState = SplashUiState.Loading,
+            ).apply {
+                intent {
+                    delay(1500)
+                    postSideEffect(SplashSideEffect.NavigateToLogin)
+                }
+            }
     }
-}

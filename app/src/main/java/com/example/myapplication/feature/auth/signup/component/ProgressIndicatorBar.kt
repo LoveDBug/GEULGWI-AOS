@@ -14,16 +14,18 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProgressIndicatorBar(progress: Float) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(4.dp)
-            .background(Color.LightGray)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .background(Color.LightGray),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(progress)
-                .background(MaterialTheme.colorScheme.primary)
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress)
+                    .background(MaterialTheme.colorScheme.primary),
         )
     }
 }

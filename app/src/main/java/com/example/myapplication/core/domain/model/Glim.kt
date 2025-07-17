@@ -8,5 +8,5 @@ data class Glim(
     val bookTitle: String,
     val bookAuthor: String,
     val bookImgUrl: String,
-    val pageInfo: String = ""
+    val pageInfo: String = "",
 )

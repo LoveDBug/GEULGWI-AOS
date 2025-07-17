@@ -8,10 +8,11 @@ data class LoginUiState(
     val isLoading: Boolean = false,
 ) {
     val isLoginEnabled: Boolean
-        get() = emailError == null
-                && passwordError == null
-                && email.isNotBlank()
-                && password.isNotBlank()
+        get() =
+            emailError == null &&
+                passwordError == null &&
+                email.isNotBlank() &&
+                password.isNotBlank()
 }
 
 sealed interface LoginSideEffect {

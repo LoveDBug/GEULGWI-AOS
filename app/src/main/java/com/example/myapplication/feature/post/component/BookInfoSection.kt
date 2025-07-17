@@ -17,26 +17,25 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 
 @Composable
-fun BookInfoSection(
-    modifier: Modifier = Modifier
-) {
+fun BookInfoSection(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
-            .padding(16.dp)
-            .padding(end = 80.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .padding(16.dp)
+                .padding(end = 80.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = {}) {
             Icon(
                 painter = painterResource(R.drawable.icon_post),
-                contentDescription = null
+                contentDescription = null,
             )
         }
         Spacer(Modifier.height(4.dp))
         Text(
             text = "책 정보 추가",
             style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
     }
 }

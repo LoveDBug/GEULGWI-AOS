@@ -24,23 +24,25 @@ fun EmailVerificationCodeInputContent(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    error: String? = null
+    error: String? = null,
 ) {
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.auth_greeting),
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = Color.Gray,
-                fontSize = 14.sp
-            )
+            style =
+                MaterialTheme.typography.bodySmall.copy(
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                ),
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.verification_code_instruction),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
         )
         Spacer(modifier = Modifier.height(12.dp))
         TextField(
@@ -50,21 +52,24 @@ fun EmailVerificationCodeInputContent(
                     onValueChange(input)
                 }
             },
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier =
+                modifier
+                    .fillMaxWidth(),
             isError = error != null,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             label = {
                 Text(
                     text = error ?: stringResource(id = R.string.verification_code_placeholder),
-                    color = if (error != null)
-                        MaterialTheme.colorScheme.error
-                    else
-                        Color.Gray,
-                    fontSize = 14.sp
+                    color =
+                        if (error != null) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            Color.Gray
+                        },
+                    fontSize = 14.sp,
                 )
             },
-            singleLine = true
+            singleLine = true,
         )
     }
 }
@@ -75,7 +80,7 @@ fun PreviewEmailVerificationCodeInputContent_Empty() {
     EmailVerificationCodeInputContent(
         value = "",
         onValueChange = {},
-        error = null
+        error = null,
     )
 }
 
@@ -85,6 +90,6 @@ fun PreviewEmailVerificationCodeInputContent_WithError() {
     EmailVerificationCodeInputContent(
         value = "123",
         onValueChange = {},
-        error = "인증번호가 올바르지 않아요"
+        error = "인증번호가 올바르지 않아요",
     )
 }

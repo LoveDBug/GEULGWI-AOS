@@ -17,32 +17,32 @@ fun TextStyleControls(
     isBold: Boolean,
     isItalic: Boolean,
     onToggleBold: () -> Unit,
-    onToggleItalic: () -> Unit
+    onToggleItalic: () -> Unit,
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         IconButton(
             onClick = onToggleBold,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_title),
                 contentDescription = "굵게",
                 tint = if (isBold) Color.Yellow else Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
 
         IconButton(
             onClick = onToggleItalic,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_more),
                 contentDescription = "기울이기",
                 tint = if (isItalic) Color.Yellow else Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
     }

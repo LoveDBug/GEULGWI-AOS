@@ -13,16 +13,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface RepositoryModule {
+    @Singleton
+    @Binds
+    fun bindGlimRepository(repository: FakeGlimRepositoryImpl): FakeGlimRepository
 
     @Singleton
     @Binds
-    fun bindGlimRepository(
-        repository: FakeGlimRepositoryImpl
-    ): FakeGlimRepository
-
-    @Singleton
-    @Binds
-    fun bindAuthRepository(
-        repository: AuthRepositoryImpl
-    ): AuthRepository
+    fun bindAuthRepository(repository: AuthRepositoryImpl): AuthRepository
 }

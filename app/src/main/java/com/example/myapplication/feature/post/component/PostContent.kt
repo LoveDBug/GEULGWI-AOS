@@ -44,27 +44,29 @@ fun PostContent(
     onCompleteClick: () -> Unit,
     onConfirmExit: () -> Unit,
     onCancelExit: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                onBackgroundClick()
-                focusManager.clearFocus()
-            }
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(Color(0x881C1B1F), Color(0xFF1C1B1F)),
-                    start = Offset(0f, 0f),
-                    end = Offset(0f, Float.POSITIVE_INFINITY)
-                )
-            )
+        modifier =
+            modifier
+                .fillMaxSize()
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                ) {
+                    onBackgroundClick()
+                    focusManager.clearFocus()
+                }
+                .background(
+                    brush =
+                        Brush.linearGradient(
+                            colors = listOf(Color(0x881C1B1F), Color(0xFF1C1B1F)),
+                            start = Offset(0f, 0f),
+                            end = Offset(0f, Float.POSITIVE_INFINITY),
+                        ),
+                ),
     ) {
         AsyncImage(
             model = backgroundImageUri,
@@ -89,18 +91,18 @@ fun PostContent(
             onDecreaseFontSize = onDecreaseFontSize,
             onToggleBold = onToggleBold,
             onToggleItalic = onToggleItalic,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center),
         )
 
         ActionButtons(
             onTextExtractionClick = onTextExtractionClick,
             onBackgroundImageButtonClick = onBackgroundImageClick,
             onCompleteClick = onCompleteClick,
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier.align(Alignment.BottomEnd),
         )
 
         BookInfoSection(
-            modifier = Modifier.align(Alignment.BottomStart)
+            modifier = Modifier.align(Alignment.BottomStart),
         )
 
         if (showExitDialog) {
@@ -108,5 +110,3 @@ fun PostContent(
         }
     }
 }
-
-

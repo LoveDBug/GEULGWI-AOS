@@ -1,6 +1,5 @@
 package com.example.myapplication.core.data.di
 
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,14 +14,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
     @Provides
     @Singleton
     fun provideHttpClient(): OkHttpClient {
-        val client = OkHttpClient.Builder()
-            .readTimeout(100, TimeUnit.SECONDS)
-            .connectTimeout(100, TimeUnit.SECONDS)
-            .writeTimeout(100, TimeUnit.SECONDS)
+        val client =
+            OkHttpClient.Builder()
+                .readTimeout(100, TimeUnit.SECONDS)
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .writeTimeout(100, TimeUnit.SECONDS)
         return client.build()
     }
 

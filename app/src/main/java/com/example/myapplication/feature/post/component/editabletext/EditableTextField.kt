@@ -37,32 +37,34 @@ fun EditableTextField(
     onDecreaseFontSize: () -> Unit,
     onToggleBold: () -> Unit,
     onToggleItalic: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-            .border(
-                width = 1.dp,
-                color = when {
-                    isDragging -> Color.Yellow
-                    isFocused -> Color.White
-                    else -> Color.Transparent
-                },
-            )
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = {
-                        onDragStart()
-                    },
-                    onDragEnd = {
-                        onDragEnd()
+        modifier =
+            modifier
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .border(
+                    width = 1.dp,
+                    color =
+                        when {
+                            isDragging -> Color.Yellow
+                            isFocused -> Color.White
+                            else -> Color.Transparent
+                        },
+                )
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = {
+                            onDragStart()
+                        },
+                        onDragEnd = {
+                            onDragEnd()
+                        },
+                    ) { _, dragAmount ->
+                        onDrag(dragAmount.x, dragAmount.y)
                     }
-                ) { _, dragAmount ->
-                    onDrag(dragAmount.x, dragAmount.y)
-                }
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
+                },
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (isFocused && !isDragging) {
             TextConfigContent(
@@ -70,32 +72,33 @@ fun EditableTextField(
                 onIncreaseFontSize = onIncreaseFontSize,
                 onDecreaseFontSize = onDecreaseFontSize,
                 onToggleBold = onToggleBold,
-                onToggleItalic = onToggleItalic
+                onToggleItalic = onToggleItalic,
             )
         }
         TextField(
             value = text,
             onValueChange = onTextChange,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                textAlign = TextAlign.Center,
-                lineHeight = 40.sp,
-                fontSize = textStyle.fontSizeUnit,
-                fontWeight = textStyle.fontWeight,
-                fontStyle = textStyle.fontStyle
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
+            textStyle =
+                MaterialTheme.typography.bodyMedium.copy(
+                    textAlign = TextAlign.Center,
+                    lineHeight = 40.sp,
+                    fontSize = textStyle.fontSizeUnit,
+                    fontWeight = textStyle.fontWeight,
+                    fontStyle = textStyle.fontStyle,
+                ),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
             readOnly = isDragging,
-            modifier = Modifier
-                .onFocusChanged { focusState ->
-                    onFocusChanged(focusState.isFocused)
-                }
+            modifier =
+                Modifier
+                    .onFocusChanged { focusState ->
+                        onFocusChanged(focusState.isFocused)
+                    },
         )
     }
 }
-
-

@@ -3,17 +3,14 @@ package com.example.myapplication.core.navigation
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
+    @Serializable
+    data object Login : Route
 
     @Serializable
-    data object Login: Route
-
-    @Serializable
-    data object SignUp: Route
+    data object SignUp : Route
 }
 
-
 sealed interface BottomTabRoute : Route {
-
     @Serializable
     data object Home : BottomTabRoute
 
@@ -28,5 +25,4 @@ sealed interface BottomTabRoute : Route {
 
     @Serializable
     data object Profile : BottomTabRoute
-
 }

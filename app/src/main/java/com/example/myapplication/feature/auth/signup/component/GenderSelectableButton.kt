@@ -16,20 +16,21 @@ import androidx.compose.ui.unit.dp
 fun RowScope.GenderSelectableButton(
     text: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     OutlinedButton(
         onClick = onClick,
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-            contentColor = if (isSelected) Color.White else Color.Black
-        ),
+        colors =
+            ButtonDefaults.outlinedButtonColors(
+                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                contentColor = if (isSelected) Color.White else Color.Black,
+            ),
         border = BorderStroke(1.dp, Color.Black),
-        modifier = Modifier
-            .weight(1f)
-            .height(48.dp)
+        modifier =
+            Modifier
+                .weight(1f)
+                .height(48.dp),
     ) {
         Text(text)
     }
 }
-

@@ -22,24 +22,26 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 internal fun PostRoute(
     padding: PaddingValues,
     popBackStack: () -> Unit,
-    viewModel: PostViewModel = hiltViewModel()
+    viewModel: PostViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
     val context = LocalContext.current
 
     // 이미지 텍스트 추출
-    val textImageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        viewModel.textImageSelected(uri)
-    }
+    val textImageLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent(),
+        ) { uri ->
+            viewModel.textImageSelected(uri)
+        }
 
     // 배경 이미지 선택
-    val backgroundImageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        viewModel.backgroundImageSelected(uri)
-    }
+    val backgroundImageLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent(),
+        ) { uri ->
+            viewModel.backgroundImageSelected(uri)
+        }
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -85,8 +87,7 @@ internal fun PostRoute(
             onCompleteClick = viewModel::completeClick,
             onConfirmExit = viewModel::confirmExit,
             onCancelExit = viewModel::cancelExit,
-            modifier = Modifier.padding(padding.excludeSystemBars())
+            modifier = Modifier.padding(padding.excludeSystemBars()),
         )
     }
-
 }

@@ -11,16 +11,11 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 @Module
 @InstallIn(ActivityRetainedComponent::class)
 internal abstract class NavigatorModule {
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun provideNavigator(navigator: NavigatorImpl): Navigator
 
     @Binds
     @ActivityRetainedScoped
-    abstract fun provideNavigator(
-        navigator: NavigatorImpl
-    ): Navigator
-
-    @Binds
-    @ActivityRetainedScoped
-    abstract fun provideInternalNavigator(
-        navigator: NavigatorImpl
-    ): InternalNavigator
+    abstract fun provideInternalNavigator(navigator: NavigatorImpl): InternalNavigator
 }

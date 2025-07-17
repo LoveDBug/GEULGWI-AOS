@@ -2,27 +2,22 @@ package com.example.myapplication.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.myapplication.core.navigation.internal.viewmodel.NavigatorViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.core.navigation.internal.viewmodel.RouteSideEffect
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun LaunchedNavigator(
-    navHostController: NavHostController,
-) {
+fun LaunchedNavigator(navHostController: NavHostController) {
     InternalLaunchedNavigator(
         navHostController = navHostController,
     )
 }
-
 
 @Composable
 private fun InternalLaunchedNavigator(

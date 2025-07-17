@@ -18,7 +18,7 @@ fun EmailInputTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = stringResource(id = R.string.login_email_placeholder),
-    error: String? = null
+    error: String? = null,
 ) {
     val labelText = error ?: label
 
@@ -27,19 +27,21 @@ fun EmailInputTextField(
         onValueChange = onValueChange,
         singleLine = true,
         isError = error != null,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.Transparent),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(Color.Transparent),
         label = {
             Text(
                 text = labelText,
-                color = if (error != null)
-                    MaterialTheme.colorScheme.error
-                else
-                    Color.Gray,
-                fontSize = 14.sp
+                color =
+                    if (error != null) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        Color.Gray
+                    },
+                fontSize = 14.sp,
             )
-        }
+        },
     )
 }
-

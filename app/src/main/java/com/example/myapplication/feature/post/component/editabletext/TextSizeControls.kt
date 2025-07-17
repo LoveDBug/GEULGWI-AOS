@@ -16,33 +16,33 @@ import com.example.myapplication.R
 @Composable
 fun TextSizeControls(
     onIncreaseFontSize: () -> Unit,
-    onDecreaseFontSize: () -> Unit
+    onDecreaseFontSize: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         IconButton(
             onClick = onDecreaseFontSize,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_image),
                 contentDescription = "텍스트 크기 줄이기",
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
 
         IconButton(
             onClick = onIncreaseFontSize,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.icon_post),
                 contentDescription = "텍스트 크기 키우기",
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
         }
     }

@@ -21,29 +21,31 @@ fun EmailAuthInputContent(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    error: String? = null
+    error: String? = null,
 ) {
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.auth_greeting),
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = Color.Gray,
-                fontSize = 14.sp
-            )
+            style =
+                MaterialTheme.typography.bodySmall.copy(
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                ),
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.email_auth_instruction),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
         )
         Spacer(modifier = Modifier.height(12.dp))
         EmailInputTextField(
             value = value,
             onValueChange = onValueChange,
-            error = error
+            error = error,
         )
     }
 }
@@ -54,7 +56,7 @@ fun PreviewEmailAuthInputContent_Empty() {
     EmailAuthInputContent(
         value = "",
         onValueChange = {},
-        error = null
+        error = null,
     )
 }
 
@@ -64,6 +66,6 @@ fun PreviewEmailAuthInputContent_WithError() {
     EmailAuthInputContent(
         value = "invalid_email@",
         onValueChange = {},
-        error = "이메일 형식이 올바르지 않아요."
+        error = "이메일 형식이 올바르지 않아요.",
     )
 }

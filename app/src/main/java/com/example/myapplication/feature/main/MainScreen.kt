@@ -15,20 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.navigation.compose.NavHost
-import com.example.myapplication.feature.reels.navigation.reelsNavGraph
+import com.example.myapplication.feature.auth.navigation.authNavGraph
 import com.example.myapplication.feature.home.navigation.homeNavGraph
 import com.example.myapplication.feature.library.navigation.libraryNavGraph
-import com.example.myapplication.feature.auth.navigation.authNavGraph
 import com.example.myapplication.feature.main.component.MainBottomBar
 import com.example.myapplication.feature.post.navigation.postNavGraph
 import com.example.myapplication.feature.profile.navigation.profileNavGraph
+import com.example.myapplication.feature.reels.navigation.reelsNavGraph
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-internal fun MainScreen(
-    navigator: MainNavController = rememberMainNavController(),
-) {
-
+internal fun MainScreen(navigator: MainNavController = rememberMainNavController()) {
     Scaffold(
         bottomBar = {
             MainBottomBar(
@@ -37,7 +34,7 @@ internal fun MainScreen(
                 onTabSelected = {
                     navigator.navigate(it)
                 },
-                visible = navigator.shouldShowBottomBar()
+                visible = navigator.shouldShowBottomBar(),
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
@@ -50,7 +47,7 @@ internal fun MainScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             authNavGraph(
-                padding = innerPadding
+                padding = innerPadding,
             )
             homeNavGraph(
                 padding = innerPadding,
@@ -85,6 +82,6 @@ fun PaddingValues.excludeSystemBars(): PaddingValues {
         start = calculateStartPadding(layoutDirection),
         top = calculateTopPadding() - systemBarsPadding.calculateTopPadding(),
         end = calculateEndPadding(layoutDirection),
-        bottom = calculateBottomPadding()
+        bottom = calculateBottomPadding(),
     )
 }
