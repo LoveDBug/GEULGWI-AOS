@@ -1,13 +1,16 @@
 package com.example.myapplication.feature.auth.login
 
+import android.content.Context
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.R
 import com.example.myapplication.core.domain.usecase.auth.LoginUseCase
 import com.example.myapplication.core.navigation.BottomTabRoute
 import com.example.myapplication.core.navigation.Navigator
 import com.example.myapplication.core.navigation.Route
 import com.example.myapplication.feature.auth.login.component.SocialProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -15,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val navigator: Navigator,
     private val loginUseCase: LoginUseCase
 ) : ViewModel(), ContainerHost<LoginUiState, LoginSideEffect> {
@@ -58,14 +62,16 @@ internal class LoginViewModel @Inject constructor(
     fun navigateToSocialLogin(socialProvider: SocialProvider) = intent {}
 
     private fun validateEmail(email: String): String? = when {
-        email.isBlank() -> "이메일을 입력해주세요."
-        !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() -> "유효한 이메일을 입력해주세요."
+        email.isBlank() -> context.getString(R.string.error_email_empty)
+        !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() ->
+            context.getString(R.string.error_email_invalid)
+
         else -> null
     }
 
     private fun validatePassword(password: String): String? = when {
-        password.isBlank() -> "비밀번호를 입력해주세요."
-        !PASSWORD_REGEX.matches(password) -> "대소문자·숫자·특수문자 포함 8~16자"
+        password.isBlank() -> context.getString(R.string.error_password_empty)
+        !PASSWORD_REGEX.matches(password) -> context.getString(R.string.error_password_invalid)
         else -> null
     }
 }
