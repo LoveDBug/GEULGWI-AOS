@@ -24,11 +24,11 @@ data class SignUpUiState(
                 SignUpStep.Code -> code.isNotBlank() && codeError == null
                 SignUpStep.Password ->
                     password.isNotBlank() && confirmPassword.isNotBlank() &&
-                        passwordError == null && confirmPasswordError == null
+                            passwordError == null && confirmPasswordError == null
 
                 SignUpStep.Profile ->
                     name.isNotBlank() && birthYear.isNotBlank() && gender != null &&
-                        nameError == null && birthYearError == null
+                            nameError == null && birthYearError == null
             }
 }
 
