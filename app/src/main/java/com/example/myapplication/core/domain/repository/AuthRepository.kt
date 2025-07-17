@@ -4,10 +4,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun login(): Flow<Unit>
+    fun login(): Flow<Result<Unit>>
 
-    fun signUp(): Flow<Unit>
+    fun signUp(): Flow<Result<Unit>>
 
-    fun sendVerificationCode(): Flow<Unit>
+    fun sendVerificationCode(code: String): Flow<Result<Unit>>
 
 }

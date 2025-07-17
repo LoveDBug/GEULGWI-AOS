@@ -6,5 +6,5 @@ import javax.inject.Inject
 class CertifyValidCodeUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    operator fun invoke() = repository.sendVerificationCode()
+    operator fun invoke(code: String) = repository.sendVerificationCode(code)
 }

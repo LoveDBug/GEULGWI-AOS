@@ -51,7 +51,7 @@ internal class LoginViewModel @Inject constructor(
 
     fun navigateToSignUp() = intent { navigator.navigate(Route.SignUp) }
 
-    fun navigateToMain() = intent { navigator.navigate(BottomTabRoute.Home) }
+    fun navigateToHome() = intent { navigator.navigate(BottomTabRoute.Home) }
 
     fun navigateToForgotPassword() = intent {}
 

@@ -1,18 +1,23 @@
 package com.example.myapplication.feature.auth.signup
 
+import android.content.Context
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.R
 import com.example.myapplication.core.domain.usecase.auth.CertifyValidCodeUseCase
 import com.example.myapplication.core.domain.usecase.auth.SignUpUseCase
 import com.example.myapplication.core.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 @HiltViewModel
 internal class SignUpViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val navigator: Navigator,
     private val signUpUseCase: SignUpUseCase,
     private val certifyValidCodeUseCase: CertifyValidCodeUseCase
@@ -35,7 +40,6 @@ internal class SignUpViewModel @Inject constructor(
     }
 
     fun onCodeChanged(code: String) = intent {
-        // 숫자만 입력되도록 필터링
         val filteredCode = code.filter { it.isDigit() }.take(6)
         val error = if (filteredCode.isNotBlank()) validateCode(filteredCode) else null
         reduce { state.copy(code = filteredCode, codeError = error) }
@@ -45,7 +49,7 @@ internal class SignUpViewModel @Inject constructor(
         val error = if (password.isNotBlank()) validatePassword(password) else null
         val confirmError =
             if (state.confirmPassword.isNotBlank() && password != state.confirmPassword) {
-                "비밀번호가 일치하지 않습니다."
+                context.getString(R.string.error_password_mismatch)
             } else null
         reduce {
             state.copy(
@@ -58,7 +62,7 @@ internal class SignUpViewModel @Inject constructor(
 
     fun onConfirmPasswordChanged(confirmPassword: String) = intent {
         val error = if (confirmPassword.isNotBlank() && confirmPassword != state.password) {
-            "비밀번호가 일치하지 않습니다."
+            context.getString(R.string.error_password_mismatch)
         } else null
         reduce { state.copy(confirmPassword = confirmPassword, confirmPasswordError = error) }
     }
@@ -69,7 +73,6 @@ internal class SignUpViewModel @Inject constructor(
     }
 
     fun onBirthYearChanged(birthYear: String) = intent {
-        // 숫자만 입력되도록 필터링
         val filteredYear = birthYear.filter { it.isDigit() }.take(4)
         val error = if (filteredYear.isNotBlank()) validateBirthYear(filteredYear) else null
         reduce { state.copy(birthYear = filteredYear, birthYearError = error) }
@@ -88,7 +91,7 @@ internal class SignUpViewModel @Inject constructor(
                     reduce { state.copy(emailError = error) }
                     return@intent
                 }
-
+                moveToNextStep()
             }
 
             SignUpStep.Code -> {
@@ -98,12 +101,13 @@ internal class SignUpViewModel @Inject constructor(
                     reduce { state.copy(codeError = error) }
                     return@intent
                 }
+                certifyValidCode()
             }
 
             SignUpStep.Password -> {
                 val passwordError = validatePassword(state.password)
                 val confirmError = if (state.password != state.confirmPassword) {
-                    "비밀번호가 일치하지 않습니다."
+                    context.getString(R.string.error_password_mismatch)
                 } else null
 
                 if (passwordError != null || confirmError != null) {
@@ -117,12 +121,15 @@ internal class SignUpViewModel @Inject constructor(
                     }
                     return@intent
                 }
+                moveToNextStep()
             }
 
             SignUpStep.Profile -> {
                 val nameError = validateName(state.name)
                 val birthYearError = validateBirthYear(state.birthYear)
-                val genderError = if (state.gender == null) "성별을 선택해주세요." else null
+                val genderError = if (state.gender == null) {
+                    context.getString(R.string.error_gender_empty)
+                } else null
 
                 if (nameError != null || birthYearError != null || genderError != null) {
                     val errorMessage = nameError ?: birthYearError ?: genderError!!
@@ -138,10 +145,6 @@ internal class SignUpViewModel @Inject constructor(
                 return@intent
             }
         }
-
-        state.currentStep.next()?.let { next ->
-            reduce { state.copy(currentStep = next) }
-        }
     }
 
     fun onBackStep() = intent {
@@ -150,37 +153,69 @@ internal class SignUpViewModel @Inject constructor(
         } ?: navigator.navigateBack()
     }
 
+    private fun certifyValidCode() = intent {
+        certifyValidCodeUseCase(state.code)
+            .onStart {
+                reduce { state.copy(isLoading = true) }
+            }
+            .catch { exception ->
+                reduce { state.copy(isLoading = false) }
+                val errorMessage = exception.message
+                    ?: context.getString(R.string.error_code_verification_failed)
+                postSideEffect(SignUpSideEffect.ShowToast(errorMessage))
+                reduce { state.copy(codeError = errorMessage) }
+            }
+            .collect { result ->
+                reduce { state.copy(isLoading = false) }
+                if (result.isSuccess) {
+                    moveToNextStep()
+                } else {
+                    val errorMessage = context.getString(R.string.error_code_incorrect)
+                    postSideEffect(SignUpSideEffect.ShowToast(errorMessage))
+                    reduce { state.copy(codeError = errorMessage) }
+                }
+            }
+    }
+
+    private fun moveToNextStep() = intent {
+        state.currentStep.next()?.let { next ->
+            reduce { state.copy(currentStep = next) }
+        }
+    }
+
     private fun validateEmail(email: String): String? = when {
-        email.isBlank() -> "이메일을 입력해주세요."
-        !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() -> "유효한 이메일을 입력해주세요."
+        email.isBlank() -> context.getString(R.string.error_email_empty)
+        !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() ->
+            context.getString(R.string.error_email_invalid)
+
         else -> null
     }
 
     private fun validateCode(code: String): String? = when {
-        code.isBlank() -> "인증 코드를 입력해주세요."
-        !CODE_REGEX.matches(code) -> "6자리 숫자를 입력해주세요."
+        code.isBlank() -> context.getString(R.string.error_code_empty)
+        !CODE_REGEX.matches(code) -> context.getString(R.string.error_code_invalid)
         else -> null
     }
 
     private fun validatePassword(password: String): String? = when {
-        password.isBlank() -> "비밀번호를 입력해주세요."
-        !PASSWORD_REGEX.matches(password) -> "대소문자·숫자·특수문자 포함 8~16자"
+        password.isBlank() -> context.getString(R.string.error_password_empty)
+        !PASSWORD_REGEX.matches(password) -> context.getString(R.string.error_password_invalid)
         else -> null
     }
 
     private fun validateName(name: String): String? = when {
-        name.isBlank() -> "이름을 입력해주세요."
-        !NAME_REGEX.matches(name) -> "이름은 2~16자로 입력해주세요."
+        name.isBlank() -> context.getString(R.string.error_name_empty)
+        !NAME_REGEX.matches(name) -> context.getString(R.string.error_name_invalid)
         else -> null
     }
 
     private fun validateBirthYear(birthYear: String): String? = when {
-        birthYear.isBlank() -> "출생연도를 입력해주세요."
-        !BIRTH_YEAR_REGEX.matches(birthYear) -> "4자리 숫자로 입력해주세요."
+        birthYear.isBlank() -> context.getString(R.string.error_birth_year_empty)
+        !BIRTH_YEAR_REGEX.matches(birthYear) -> context.getString(R.string.error_birth_year_invalid)
         birthYear.toIntOrNull()?.let { year ->
             val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
             year !in 1900..currentYear
-        } == true -> "유효한 연도를 입력해주세요."
+        } == true -> context.getString(R.string.error_birth_year_range)
 
         else -> null
     }
