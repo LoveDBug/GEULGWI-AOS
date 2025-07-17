@@ -1,6 +1,8 @@
-package com.example.myapplication.core.di
+package com.example.myapplication.core.data.di
 
+import com.example.myapplication.core.data.repository.AuthRepositoryImpl
 import com.example.myapplication.core.data.repository.fake.FakeGlimRepositoryImpl
+import com.example.myapplication.core.domain.repository.AuthRepository
 import com.example.myapplication.core.domain.repository.FakeGlimRepository
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,10 @@ interface RepositoryModule {
     fun bindGlimRepository(
         repository: FakeGlimRepositoryImpl
     ): FakeGlimRepository
+
+    @Singleton
+    @Binds
+    fun bindAuthRepository(
+        repository: AuthRepositoryImpl
+    ): AuthRepository
 }

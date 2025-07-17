@@ -1,21 +1,26 @@
 package com.example.myapplication.feature.auth.login
 
+import android.content.Context
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.example.myapplication.R
+import com.example.myapplication.core.domain.usecase.auth.LoginUseCase
+import com.example.myapplication.core.navigation.BottomTabRoute
 import com.example.myapplication.core.navigation.Navigator
 import com.example.myapplication.core.navigation.Route
 import com.example.myapplication.feature.auth.login.component.SocialProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
-    private val navigator: Navigator
+    @ApplicationContext private val context: Context,
+    private val navigator: Navigator,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel(), ContainerHost<LoginUiState, LoginSideEffect> {
 
     companion object {
@@ -37,47 +42,36 @@ internal class LoginViewModel @Inject constructor(
     }
 
     fun onLoginClicked() = intent {
-        val emailErr = validateEmail(state.email)
-        val pwErr = validatePassword(state.password)
-        if (emailErr != null || pwErr != null) {
-            reduce { state.copy(emailError = emailErr, passwordError = pwErr) }
-            postSideEffect(LoginSideEffect.ShowError(emailErr ?: pwErr!!))
+        val emailError = validateEmail(state.email)
+        val passwordError = validatePassword(state.password)
+        if (emailError != null || passwordError != null) {
+            reduce { state.copy(emailError = emailError, passwordError = passwordError) }
+            postSideEffect(LoginSideEffect.ShowError(emailError ?: passwordError!!))
             return@intent
         }
         reduce { state.copy(isLoading = true) }
         delay(1_000)
-        postSideEffect(LoginSideEffect.NavigateMain)
     }
 
-    fun onSignUpClicked() = intent { /*postSideEffect(LoginSideEffect.NavigateSignUp)*/ navigator.navigate(Route.SignUp) }
-    fun onForgotPasswordClicked() =
-        intent { postSideEffect(LoginSideEffect.NavigateForgotPassword) }
+    fun navigateToSignUp() = intent { navigator.navigate(Route.SignUp) }
 
-    fun onSocialLoginClicked(provider: SocialProvider) =
-        intent { postSideEffect(LoginSideEffect.NavigateSocialLogin(provider)) }
+    fun navigateToHome() = intent { navigator.navigate(BottomTabRoute.Home) }
 
-    fun onGuestClicked() = intent { postSideEffect(LoginSideEffect.NavigateGuest) }
+    fun navigateToForgotPassword() = intent {}
+
+    fun navigateToSocialLogin(socialProvider: SocialProvider) = intent {}
 
     private fun validateEmail(email: String): String? = when {
-        email.isBlank() -> "이메일을 입력해주세요."
-        !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() -> "유효한 이메일을 입력해주세요."
+        email.isBlank() -> context.getString(R.string.error_email_empty)
+        !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() ->
+            context.getString(R.string.error_email_invalid)
+
         else -> null
     }
 
     private fun validatePassword(password: String): String? = when {
-        password.isBlank() -> "비밀번호를 입력해주세요."
-        !PASSWORD_REGEX.matches(password) -> "대소문자·숫자·특수문자 포함 8~16자"
+        password.isBlank() -> context.getString(R.string.error_password_empty)
+        !PASSWORD_REGEX.matches(password) -> context.getString(R.string.error_password_invalid)
         else -> null
-    }
-
-    fun navigate(effect: LoginSideEffect) = viewModelScope.launch {
-        when (effect) {
-//            is LoginSideEffect.NavigateMain -> navigator.navigate(Route.Main)
-//            is LoginSideEffect.NavigateSignUp -> navigator.navigate(Route.SignUp)
-//            is LoginSideEffect.NavigateForgotPassword -> navigator.navigate(Route.ForgotPassword)
-//            is LoginSideEffect.NavigateSocialLogin -> navigator.navigate(Route.SocialLogin(effect.provider))
-//            is LoginSideEffect.NavigateGuest -> navigator.navigate(Route.Main)
-            else -> {} // ShowError는 UI 처리
-        }
     }
 }
