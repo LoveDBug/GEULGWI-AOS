@@ -1,6 +1,5 @@
 package com.example.myapplication.feature.profile.component
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -86,7 +85,7 @@ internal fun ProfileHeader(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = stringResource(R.string.content_description_default_profile),
+                        contentDescription = stringResource(R.string.content_description_profile_image),
                         tint = Color.Gray,
                         modifier = Modifier.size(48.dp)
                     )
